@@ -1,0 +1,111 @@
+<% content_for :title, "Drinks - Ruby On Tap" %>
+
+<h1>Drink History</h1>
+
+<!-- Filter Options -->
+<div class="card" style="margin-bottom: 1.5rem;">
+  <%= form_with(url: drinks_path, method: :get, local: true, style: "display: flex; gap: 1rem; align-items: end;") do |form| %>
+    <div>
+      <%= form.label :user_id, "Filter by User:", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
+      <%= form.collection_select :user_id, User.order(:username), :id, :display_name, { prompt: "All Users" }, { style: "padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" } %>
+    </div>
+    <div>
+      <%= form.label :keg_id, "Filter by Keg:", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
+      <%= form.collection_select :keg_id, Keg.includes(beverage: :producer).order('beverages.name'), :id, ->(k) { "#{k.beverage.name} (#{k.beverage.producer.name})" }, { prompt: "All Kegs" }, { style: "padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" } %>
+    </div>
+    <div>
+      <%= form.submit "Filter", class: "btn" %>
+      <%= link_to "Clear", drinks_path, class: "btn" %>
+    </div>
+  <% end %>
+</div>
+
+<div class="card">
+  <% if @drinks.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Beverage</th>
+          <th>Volume</th>
+          <th>Tap</th>
+          <th>Time</th>
+          <th>Session</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @drinks.each do |drink| %>
+          <tr>
+            <td>
+              <strong><%= drink.user.display_name %></strong>
+              <% if drink.user.guest? %>
+                <span class="badge badge-info" style="margin-left: 0.5rem;">Guest</span>
+              <% end %>
+            </td>
+            <td>
+              <%= drink.keg.beverage.name %><br>
+              <span style="font-size: 0.875rem; color: #666;"><%= drink.keg.beverage.producer.name %></span>
+            </td>
+            <td>
+              <strong><%= number_to_human(drink.volume_ml, units: { unit: "ml" }) %></strong>
+              <% if drink.keg.beverage.calories_per_ml %>
+                <br><span style="font-size: 0.875rem; color: #666;"><%= (drink.volume_ml * drink.keg.beverage.calories_per_ml).round %> cal</span>
+              <% end %>
+            </td>
+            <td>
+              <% if drink.keg.current_tap %>
+                <%= drink.keg.current_tap.name %>
+              <% else %>
+                <span style="color: #999;">-</span>
+              <% end %>
+            </td>
+            <td>
+              <%= drink.created_at.strftime("%b %d, %Y") %><br>
+              <span style="font-size: 0.875rem; color: #666;"><%= drink.created_at.strftime("%I:%M %p") %></span>
+            </td>
+            <td>
+              <% if drink.drinking_session %>
+                <%= link_to drink.drinking_session.name, session_path(drink.drinking_session) %>
+              <% else %>
+                <span style="color: #999;">-</span>
+              <% end %>
+            </td>
+            <td>
+              <% if drink.cancelled %>
+                <span class="badge badge-danger">Cancelled</span>
+              <% else %>
+                <span class="badge badge-success">Valid</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    
+    <!-- Pagination would go here -->
+    <% if @drinks.count >= 50 %>
+      <p style="text-align: center; margin-top: 1rem; color: #666;">
+        Showing latest 50 drinks
+      </p>
+    <% end %>
+  <% else %>
+    <p style="color: #999; text-align: center; padding: 2rem;">No drinks found</p>
+  <% end %>
+</div>
+
+<!-- Summary Stats -->
+<div class="grid">
+  <div class="card" style="text-align: center;">
+    <h3 style="font-size: 2rem; color: #3498db;"><%= @drinks.count %></h3>
+    <p style="color: #666;">Total Drinks</p>
+  </div>
+  <div class="card" style="text-align: center;">
+    <h3 style="font-size: 2rem; color: #27ae60;"><%= (@drinks.sum(&:volume_ml) / 1000.0).round(1) %>L</h3>
+    <p style="color: #666;">Total Volume</p>
+  </div>
+  <div class="card" style="text-align: center;">
+    <h3 style="font-size: 2rem; color: #e74c3c;"><%= @drinks.select(&:user_id).map(&:user_id).uniq.count %></h3>
+    <p style="color: #666;">Unique Users</p>
+  </div>
+</div>

@@ -1,0 +1,81 @@
+<% content_for :title, "Taps - Ruby On Tap" %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <h1>Tap Management</h1>
+  <%= link_to "Add New Tap", new_tap_path, class: "btn btn-success" %>
+</div>
+
+<div class="grid">
+  <% @taps.each do |tap| %>
+    <div class="card" style="<%= tap.active? ? 'border: 3px solid #27ae60;' : '' %>">
+      <div style="display: flex; justify-content: space-between; align-items: start;">
+        <h2 style="margin-bottom: 0.5rem;"><%= tap.name %></h2>
+        <%= link_to "⚙️", tap, style: "font-size: 1.5rem; text-decoration: none;" %>
+      </div>
+      
+      <% if tap.active? %>
+        <span class="badge badge-success" style="margin-bottom: 1rem;">Active</span>
+      <% else %>
+        <span class="badge badge-warning" style="margin-bottom: 1rem;">Inactive</span>
+      <% end %>
+
+      <% if tap.current_keg %>
+        <!-- Keg Info -->
+        <div style="background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+          <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">
+            <%= tap.current_keg.beverage.name %>
+          </h3>
+          <p style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;">
+            <%= tap.current_keg.beverage.producer.name %> - 
+            <%= tap.current_keg.beverage.style %>
+          </p>
+          <% if tap.current_keg.beverage.abv %>
+            <p style="font-size: 0.9rem;">🍺 <%= tap.current_keg.beverage.abv %>% ABV</p>
+          <% end %>
+          
+          <!-- Volume Bar -->
+          <div style="background: #ecf0f1; border-radius: 4px; height: 20px; margin: 1rem 0;">
+            <div style="background: #27ae60; height: 100%; border-radius: 4px; width: <%= tap.current_keg.percent_full %>%;"></div>
+          </div>
+          <p style="font-size: 0.9rem;">
+            <%= number_to_human(tap.current_keg.remaining_volume_ml, units: { unit: "ml" }) %> remaining
+            (<%= tap.current_keg.percent_full.round(1) %>%)
+          </p>
+          
+          <%= button_to "End Keg", end_keg_path(tap.current_keg), method: :post, class: "btn btn-danger", style: "margin-top: 0.5rem; width: 100%;", data: { confirm: "Are you sure?" } %>
+        </div>
+      <% else %>
+        <!-- No Keg Attached -->
+        <div style="background: #f8f9fa; padding: 2rem; border-radius: 4px; text-align: center; margin-bottom: 1rem;">
+          <p style="color: #999; font-size: 1.2rem;">🔌 No keg attached</p>
+          <%= link_to "Attach Keg", attach_keg_tap_path(tap), class: "btn btn-success", style: "margin-top: 1rem;" %>
+        </div>
+      <% end %>
+
+      <!-- Temperature -->
+      <% if tap.current_temperature %>
+        <p style="font-size: 1rem; text-align: center; padding: 0.5rem; background: #e3f2fd; border-radius: 4px; margin-bottom: 1rem;">
+          🌡️ <%= tap.current_temperature.round(1) %>°C
+        </p>
+      <% end %>
+
+      <!-- Flow Meter Info -->
+      <% if tap.meter %>
+        <p style="font-size: 0.875rem; color: #666;">
+          📊 Flow Meter: <%= tap.meter.meter_name %>
+        </p>
+      <% end %>
+
+      <div style="margin-top: 1rem;">
+        <%= link_to "View Details", tap, class: "btn", style: "width: 100%;" %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<% if @taps.empty? %>
+  <div class="card" style="text-align: center; padding: 3rem;">
+    <p style="color: #999; font-size: 1.2rem; margin-bottom: 1rem;">No taps configured yet</p>
+    <%= link_to "Add Your First Tap", new_tap_path, class: "btn btn-success" %>
+  </div>
+<% end %>

@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  keg_tapped: false
+  session_started: false
+  keg_volume_low: false
+  keg_ended: false
+  backend: MyString
+  user: one
+
+two:
+  keg_tapped: false
+  session_started: false
+  keg_volume_low: false
+  keg_ended: false
+  backend: MyString
+  user: two

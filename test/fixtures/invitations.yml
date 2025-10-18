@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  invite_code: MyString
+  for_email: MyString
+  invited_date: 2025-10-18 14:53:03
+  expires_date: 2025-10-18 14:53:03
+  invited_by: one
+
+two:
+  invite_code: MyString
+  for_email: MyString
+  invited_date: 2025-10-18 14:53:03
+  expires_date: 2025-10-18 14:53:03
+  invited_by: two

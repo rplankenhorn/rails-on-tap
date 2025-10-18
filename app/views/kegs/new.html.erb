@@ -1,0 +1,53 @@
+<% content_for :title, "New Keg - Ruby On Tap" %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <h1>New Keg</h1>
+  <%= link_to "Back to Kegs", kegs_path, class: "btn" %>
+</div>
+
+<div class="card">
+  <%= form_with(model: @keg, local: true) do |form| %>
+    <% if @keg.errors.any? %>
+      <div style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+        <h3>Please fix the following errors:</h3>
+        <ul>
+          <% @keg.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div style="margin-bottom: 1rem;">
+      <%= form.label :beverage_id, "Beverage", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
+      <%= form.collection_select :beverage_id, Beverage.all.order(:name), :id, :name, { prompt: "Select a beverage" }, { style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" } %>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <%= form.label :size, "Keg Size", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
+      <%= form.select :size, Keg::KEG_SIZES.map { |name, ml| ["#{name} (#{ml/1000.0}L)", ml] }, { prompt: "Select a size" }, { style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" } %>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <%= form.label :full_volume_ml, "Custom Volume (ml)", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
+      <%= form.number_field :full_volume_ml, step: 1, style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" %>
+      <small style="color: #666;">Leave blank to use standard keg size, or enter custom volume in ml</small>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <%= form.label :description, style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
+      <%= form.text_area :description, rows: 3, style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" %>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <%= form.label :notes, style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
+      <%= form.text_area :notes, rows: 3, style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" %>
+      <small style="color: #666;">Internal notes (e.g., batch number, acquisition date)</small>
+    </div>
+
+    <div>
+      <%= form.submit "Create Keg", class: "btn btn-success" %>
+      <%= link_to "Cancel", kegs_path, class: "btn" %>
+    </div>
+  <% end %>
+</div>

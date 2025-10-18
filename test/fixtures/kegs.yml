@@ -1,0 +1,25 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  keg_type: MyString
+  served_volume_ml: 1.5
+  full_volume_ml: 1.5
+  start_time: 2025-10-18 14:52:26
+  end_time: 2025-10-18 14:52:26
+  status: MyString
+  description: MyText
+  spilled_ml: 1.5
+  notes: MyText
+  beverage: one
+
+two:
+  keg_type: MyString
+  served_volume_ml: 1.5
+  full_volume_ml: 1.5
+  start_time: 2025-10-18 14:52:26
+  end_time: 2025-10-18 14:52:26
+  status: MyString
+  description: MyText
+  spilled_ml: 1.5
+  notes: MyText
+  beverage: two

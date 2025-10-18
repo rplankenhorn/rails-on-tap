@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  caption: MyText
+  time: 2025-10-18 14:52:51
+  user: one
+  keg: one
+  drinking_session: one
+
+two:
+  caption: MyText
+  time: 2025-10-18 14:52:51
+  user: two
+  keg: two
+  drinking_session: two

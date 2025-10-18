@@ -1,0 +1,172 @@
+<% content_for :title, "#{@session.name} - Sessions - Ruby On Tap" %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <h1><%= @session.name %></h1>
+  <%= link_to "Back to Sessions", sessions_path, class: "btn" %>
+</div>
+
+<div class="grid">
+  <!-- Session Details -->
+  <div class="card">
+    <h2>Session Details</h2>
+    <table>
+      <tr>
+        <th>Status:</th>
+        <td>
+          <% if @session.active? %>
+            <span class="badge badge-success">Active</span>
+          <% else %>
+            <span class="badge badge-info">Completed</span>
+          <% end %>
+        </td>
+      </tr>
+      <tr>
+        <th>Started:</th>
+        <td><%= @session.start_time.strftime("%B %d, %Y at %I:%M %p") %></td>
+      </tr>
+      <% if @session.end_time %>
+        <tr>
+          <th>Ended:</th>
+          <td><%= @session.end_time.strftime("%B %d, %Y at %I:%M %p") %></td>
+        </tr>
+        <tr>
+          <th>Duration:</th>
+          <td><%= distance_of_time_in_words(@session.start_time, @session.end_time) %></td>
+        </tr>
+      <% else %>
+        <tr>
+          <th>Duration:</th>
+          <td><%= distance_of_time_in_words(@session.start_time, Time.current) %> (ongoing)</td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+
+  <!-- Session Stats -->
+  <div class="card">
+    <h2>Statistics</h2>
+    <div style="text-align: center; padding: 1rem; background: #f8f9fa; border-radius: 4px; margin-bottom: 1rem;">
+      <h3 style="font-size: 2.5rem; color: #3498db; margin: 0;"><%= @session.drinks.count %></h3>
+      <p style="color: #666; margin: 0;">Total Drinks</p>
+    </div>
+    <div style="text-align: center; padding: 1rem; background: #f8f9fa; border-radius: 4px; margin-bottom: 1rem;">
+      <h3 style="font-size: 2.5rem; color: #27ae60; margin: 0;"><%= (@session.drinks.sum(&:volume_ml) / 1000.0).round(1) %>L</h3>
+      <p style="color: #666; margin: 0;">Total Volume</p>
+    </div>
+    <div style="text-align: center; padding: 1rem; background: #f8f9fa; border-radius: 4px;">
+      <h3 style="font-size: 2.5rem; color: #e74c3c; margin: 0;"><%= @session.drinks.select(&:user_id).map(&:user_id).uniq.count %></h3>
+      <p style="color: #666; margin: 0;">Participants</p>
+    </div>
+  </div>
+</div>
+
+<!-- Top Participants -->
+<div class="card">
+  <h2>Top Participants</h2>
+  <% participant_stats = @session.drinks.group_by(&:user).transform_values { |drinks| { count: drinks.count, volume: drinks.sum(&:volume_ml) } }.sort_by { |_, stats| -stats[:volume] } %>
+  <% if participant_stats.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>User</th>
+          <th>Drinks</th>
+          <th>Total Volume</th>
+          <th>Avg. Pour</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% participant_stats.each_with_index do |(user, stats), index| %>
+          <tr>
+            <td>
+              <% if index == 0 %>
+                🥇
+              <% elsif index == 1 %>
+                🥈
+              <% elsif index == 2 %>
+                🥉
+              <% else %>
+                <%= index + 1 %>
+              <% end %>
+            </td>
+            <td>
+              <strong><%= user.display_name %></strong>
+              <% if user.guest? %>
+                <span class="badge badge-info">Guest</span>
+              <% end %>
+            </td>
+            <td><%= stats[:count] %></td>
+            <td><%= number_to_human(stats[:volume], units: { unit: "ml" }) %></td>
+            <td><%= number_to_human(stats[:volume] / stats[:count], units: { unit: "ml" }) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="color: #999; text-align: center; padding: 2rem;">No participants yet</p>
+  <% end %>
+</div>
+
+<!-- Beverages Consumed -->
+<div class="card">
+  <h2>Beverages Consumed</h2>
+  <% beverage_stats = @session.drinks.group_by { |d| d.keg.beverage }.transform_values { |drinks| { count: drinks.count, volume: drinks.sum(&:volume_ml) } }.sort_by { |_, stats| -stats[:volume] } %>
+  <% if beverage_stats.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>Beverage</th>
+          <th>Producer</th>
+          <th>Drinks</th>
+          <th>Total Volume</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% beverage_stats.each do |beverage, stats| %>
+          <tr>
+            <td><strong><%= beverage.name %></strong></td>
+            <td><%= beverage.producer.name %></td>
+            <td><%= stats[:count] %></td>
+            <td><%= number_to_human(stats[:volume], units: { unit: "ml" }) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="color: #999; text-align: center; padding: 2rem;">No drinks recorded</p>
+  <% end %>
+</div>
+
+<!-- Drink Timeline -->
+<div class="card">
+  <h2>Drink Timeline</h2>
+  <% if @session.drinks.any? %>
+    <div style="max-height: 600px; overflow-y: auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>User</th>
+            <th>Beverage</th>
+            <th>Volume</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @session.drinks.order(created_at: :desc).each do |drink| %>
+            <tr>
+              <td><%= drink.created_at.strftime("%I:%M %p") %></td>
+              <td><%= drink.user.display_name %></td>
+              <td>
+                <%= drink.keg.beverage.name %><br>
+                <span style="font-size: 0.875rem; color: #666;"><%= drink.keg.beverage.producer.name %></span>
+              </td>
+              <td><%= number_to_human(drink.volume_ml, units: { unit: "ml" }) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p style="color: #999; text-align: center; padding: 2rem;">No drinks in this session</p>
+  <% end %>
+</div>
