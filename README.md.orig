@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+# rails-on-tap
+=======
 # README
 
 This README would normally document whatever steps are necessary to get the
@@ -22,3 +25,4 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+>>>>>>> 10a2cf5 (--wip-- [skip ci])
