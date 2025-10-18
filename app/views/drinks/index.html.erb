@@ -11,7 +11,7 @@
     </div>
     <div>
       <%= form.label :keg_id, "Filter by Keg:", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
-      <%= form.collection_select :keg_id, Keg.includes(beverage: :producer).order('beverages.name'), :id, ->(k) { "#{k.beverage.name} (#{k.beverage.producer.name})" }, { prompt: "All Kegs" }, { style: "padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" } %>
+      <%= form.collection_select :keg_id, Keg.includes(beverage: :beverage_producer).order('beverages.name'), :id, ->(k) { "#{k.beverage.name} (#{k.beverage.producer.name})" }, { prompt: "All Kegs" }, { style: "padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" } %>
     </div>
     <div>
       <%= form.submit "Filter", class: "btn" %>

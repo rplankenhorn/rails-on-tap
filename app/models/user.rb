@@ -20,9 +20,30 @@ class User < ApplicationRecord
   validates :username, presence: true, uniqueness: true, length: { maximum: 30 }
   validates :username, format: { with: /\A[a-zA-Z0-9@.+_-]+\z/, message: "only allows letters, numbers and @/./+/-/_ characters" }
   validates :display_name, length: { maximum: 127 }
+  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
 
   # Callbacks
   before_validation :set_display_name_default
+
+  # Override Devise to allow authentication with username
+  def self.find_for_database_authentication(warden_conditions)
+    conditions = warden_conditions.dup
+    if (login = conditions.delete(:username))
+      where(conditions).find_by(username: login.downcase)
+    elsif conditions.has_key?(:username)
+      where(conditions).find_by(username: conditions[:username])
+    else
+      where(conditions).first
+    end
+  end
+
+  def email_required?
+    false
+  end
+
+  def email_changed?
+    false
+  end
 
   # Scopes
   scope :active, -> { where(is_active: true) }

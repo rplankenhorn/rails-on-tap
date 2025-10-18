@@ -1,12 +1,12 @@
-<% content_for :title, "Edit #{@tap.name} - Taps - Ruby On Tap" %>
+<% content_for :title, "Edit #{@tap.name} - Ruby On Tap" %>
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
   <h1>Edit Tap: <%= @tap.name %></h1>
-  <%= link_to "Back to Tap", @tap, class: "btn" %>
+  <%= link_to "Back to Tap", tap_path(@tap), class: "btn" %>
 </div>
 
 <div class="card">
-  <%= form_with(model: @tap, local: true) do |form| %>
+  <%= form_with(model: @tap, url: tap_path(@tap), local: true) do |form| %>
     <% if @tap.errors.any? %>
       <div style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
         <h3>Please fix the following errors:</h3>
@@ -21,11 +21,6 @@
     <div style="margin-bottom: 1rem;">
       <%= form.label :name, style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
       <%= form.text_field :name, style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" %>
-    </div>
-
-    <div style="margin-bottom: 1rem;">
-      <%= form.label :description, style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
-      <%= form.text_area :description, rows: 3, style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" %>
     </div>
 
     <div style="margin-bottom: 1rem;">
@@ -45,8 +40,8 @@
 
     <div>
       <%= form.submit "Update Tap", class: "btn btn-success" %>
-      <%= link_to "Cancel", @tap, class: "btn" %>
-      <%= link_to "Delete Tap", @tap, method: :delete, data: { confirm: "Are you sure? This will not delete the attached keg." }, class: "btn btn-danger", style: "float: right;" %>
+      <%= link_to "Cancel", tap_path(@tap), class: "btn" %>
+      <%= link_to "Delete Tap", tap_path(@tap), method: :delete, data: { confirm: "Are you sure? This will not delete the attached keg." }, class: "btn btn-danger", style: "float: right;" %>
     </div>
   <% end %>
 </div>

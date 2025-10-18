@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_18_185310) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_18_200704) do
   create_table "api_keys", force: :cascade do |t|
     t.string "key"
     t.boolean "active"
@@ -195,7 +195,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_18_185310) do
     t.integer "beverage_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "keg_tap_id"
     t.index ["beverage_id"], name: "index_kegs_on_beverage_id"
+    t.index ["keg_tap_id"], name: "index_kegs_on_keg_tap_id"
   end
 
   create_table "notification_settings", force: :cascade do |t|
@@ -311,6 +313,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_18_185310) do
   add_foreign_key "keg_taps", "kegs", column: "current_keg_id"
   add_foreign_key "keg_taps", "thermo_sensors", column: "temperature_sensor_id"
   add_foreign_key "kegs", "beverages"
+  add_foreign_key "kegs", "keg_taps"
   add_foreign_key "notification_settings", "users"
   add_foreign_key "pictures", "drinking_sessions"
   add_foreign_key "pictures", "kegs"

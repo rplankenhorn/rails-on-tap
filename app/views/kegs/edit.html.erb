@@ -24,8 +24,8 @@
     </div>
 
     <div style="margin-bottom: 1rem;">
-      <%= form.label :size, "Keg Size", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
-      <%= form.select :size, Keg::KEG_SIZES.map { |name, ml| ["#{name} (#{ml/1000.0}L)", ml] }, {}, { style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" } %>
+      <%= form.label :keg_type, "Keg Size", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
+      <%= form.select :keg_type, Keg::KEG_SIZES.map { |key, data| [data[:description], key] }, {}, { style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" } %>
     </div>
 
     <div style="margin-bottom: 1rem;">
