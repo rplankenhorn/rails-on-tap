@@ -4,6 +4,7 @@ class KegTap < ApplicationRecord
   belongs_to :temperature_sensor, class_name: "ThermoSensor", optional: true
   has_one :meter, class_name: "FlowMeter", dependent: :nullify
   has_one :flow_toggle, class_name: "FlowToggle", dependent: :nullify
+  has_many :kegs, dependent: :nullify
 
   # Validations
   validates :name, presence: true, length: { maximum: 128 }
@@ -26,7 +27,7 @@ class KegTap < ApplicationRecord
     raise "Tap is already active" if active?
     transaction do
       end_current_keg! if current_keg
-      keg.update!(status: "on_tap", start_time: Time.current)
+      keg.update!(status: "on_tap", start_time: Time.current, keg_tap_id: id)
       update!(current_keg: keg)
     end
     keg

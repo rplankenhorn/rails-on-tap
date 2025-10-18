@@ -10,7 +10,7 @@
     <div class="card" style="<%= tap.active? ? 'border: 3px solid #27ae60;' : '' %>">
       <div style="display: flex; justify-content: space-between; align-items: start;">
         <h2 style="margin-bottom: 0.5rem;"><%= tap.name %></h2>
-        <%= link_to "⚙️", tap, style: "font-size: 1.5rem; text-decoration: none;" %>
+        <%= link_to "⚙️", tap_path(tap), style: "font-size: 1.5rem; text-decoration: none;" %>
       </div>
       
       <% if tap.active? %>
@@ -42,7 +42,7 @@
             (<%= tap.current_keg.percent_full.round(1) %>%)
           </p>
           
-          <%= button_to "End Keg", end_keg_path(tap.current_keg), method: :post, class: "btn btn-danger", style: "margin-top: 0.5rem; width: 100%;", data: { confirm: "Are you sure?" } %>
+          <%= button_to "End Keg", end_keg_keg_path(tap.current_keg), method: :post, class: "btn btn-danger", style: "margin-top: 0.5rem; width: 100%;", data: { confirm: "Are you sure?" } %>
         </div>
       <% else %>
         <!-- No Keg Attached -->
@@ -67,7 +67,7 @@
       <% end %>
 
       <div style="margin-top: 1rem;">
-        <%= link_to "View Details", tap, class: "btn", style: "width: 100%;" %>
+        <%= link_to "View Details", tap_path(tap), class: "btn", style: "width: 100%;" %>
       </div>
     </div>
   <% end %>

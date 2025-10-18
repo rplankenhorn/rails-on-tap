@@ -67,8 +67,8 @@
               <% end %>
             </td>
             <td>
-              <% if keg.started_at %>
-                <%= keg.started_at.strftime("%b %d, %Y") %>
+              <% if keg.start_time %>
+                <%= keg.start_time.strftime("%b %d, %Y") %>
               <% else %>
                 <span style="color: #999;">Not started</span>
               <% end %>
@@ -77,7 +77,7 @@
               <%= link_to "View", keg, class: "btn", style: "font-size: 0.875rem; padding: 0.25rem 0.5rem;" %>
               <%= link_to "Edit", edit_keg_path(keg), class: "btn", style: "font-size: 0.875rem; padding: 0.25rem 0.5rem;" %>
               <% if keg.status == 'on_tap' %>
-                <%= button_to "End Keg", end_keg_path(keg), method: :post, class: "btn btn-danger", style: "font-size: 0.875rem; padding: 0.25rem 0.5rem; display: inline;" %>
+                <%= button_to "End Keg", end_keg_keg_path(keg), method: :post, class: "btn btn-danger", style: "font-size: 0.875rem; padding: 0.25rem 0.5rem; display: inline;" %>
               <% end %>
             </td>
           </tr>

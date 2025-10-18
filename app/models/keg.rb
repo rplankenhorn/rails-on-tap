@@ -13,6 +13,7 @@ class Keg < ApplicationRecord
 
   # Associations
   belongs_to :beverage
+  belongs_to :keg_tap, optional: true
   has_one :current_tap, class_name: "KegTap", foreign_key: "current_keg_id", dependent: :nullify
   has_many :drinks, dependent: :restrict_with_error
   has_many :events, class_name: "SystemEvent", dependent: :destroy
@@ -43,6 +44,10 @@ class Keg < ApplicationRecord
     return 0 if full_volume_ml.nil? || full_volume_ml <= 0
     result = (remaining_volume_ml.to_f / full_volume_ml * 100)
     [ [ result, 100 ].min, 0 ].max
+  end
+
+  def size_name
+    KEG_SIZES.dig(keg_type, :description) || keg_type&.titleize || "Unknown"
   end
 
   def keg_age

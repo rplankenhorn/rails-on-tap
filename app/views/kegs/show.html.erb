@@ -50,8 +50,8 @@
       <tr>
         <th>Started:</th>
         <td>
-          <% if @keg.started_at %>
-            <%= @keg.started_at.strftime("%B %d, %Y at %I:%M %p") %>
+          <% if @keg.start_time %>
+            <%= @keg.start_time.strftime("%B %d, %Y at %I:%M %p") %>
           <% else %>
             <span style="color: #999;">Not started</span>
           <% end %>
@@ -60,8 +60,8 @@
       <tr>
         <th>Finished:</th>
         <td>
-          <% if @keg.finished_at %>
-            <%= @keg.finished_at.strftime("%B %d, %Y at %I:%M %p") %>
+          <% if @keg.end_time %>
+            <%= @keg.end_time.strftime("%B %d, %Y at %I:%M %p") %>
           <% else %>
             <span style="color: #999;">Still active</span>
           <% end %>
@@ -70,7 +70,7 @@
     </table>
     
     <% if @keg.status == 'on_tap' %>
-      <%= button_to "End This Keg", end_keg_path(@keg), method: :post, class: "btn btn-danger", style: "margin-top: 1rem;", data: { confirm: "Are you sure you want to end this keg?" } %>
+      <%= button_to "End This Keg", end_keg_keg_path(@keg), method: :post, class: "btn btn-danger", style: "margin-top: 1rem;", data: { confirm: "Are you sure you want to end this keg?" } %>
     <% end %>
   </div>
 

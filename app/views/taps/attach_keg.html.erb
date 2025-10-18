@@ -2,7 +2,7 @@
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
   <h1>Attach Keg to <%= @tap.name %></h1>
-  <%= link_to "Back to Tap", @tap, class: "btn" %>
+  <%= link_to "Back to Tap", tap_path(@tap), class: "btn" %>
 </div>
 
 <div class="card">
@@ -39,8 +39,8 @@
 
     <% if available_kegs.any? %>
       <div>
-        <%= form.submit "Attach Keg", class: "btn btn-success" %>
-        <%= link_to "Cancel", @tap, class: "btn" %>
+                <%= form.submit "Attach Keg", class: "btn btn-primary" %>
+        <%= link_to "Cancel", tap_path(@tap), class: "btn" %>
       </div>
     <% end %>
   <% end %>

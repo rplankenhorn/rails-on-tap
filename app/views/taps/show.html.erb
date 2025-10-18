@@ -26,8 +26,8 @@
         <td><%= @tap.name %></td>
       </tr>
       <tr>
-        <th>Description:</th>
-        <td><%= @tap.description || "No description" %></td>
+        <th>Notes:</th>
+        <td><%= @tap.notes || "No notes" %></td>
       </tr>
       <% if @tap.meter %>
         <tr>
@@ -83,10 +83,10 @@
         </p>
         
         <p style="color: #666; text-align: center; margin-top: 0.5rem;">
-          Started <%= time_ago_in_words(@tap.current_keg.started_at) %> ago
+          Started <%= time_ago_in_words(@tap.current_keg.start_time) %> ago
         </p>
         
-        <%= button_to "End This Keg", end_keg_path(@tap.current_keg), method: :post, class: "btn btn-danger", style: "margin-top: 1rem; width: 100%;", data: { confirm: "Are you sure you want to end this keg?" } %>
+        <%= button_to "End This Keg", end_keg_keg_path(@tap.current_keg), method: :post, class: "btn btn-danger", style: "margin-top: 1rem; width: 100%;", data: { confirm: "Are you sure you want to end this keg?" } %>
       </div>
     <% else %>
       <div style="text-align: center; padding: 3rem; background: #f8f9fa; border-radius: 4px;">
@@ -135,7 +135,7 @@
 <!-- Keg History -->
 <div class="card">
   <h2>Keg History</h2>
-  <% past_kegs = Keg.where(keg_tap_id: @tap.id).where.not(id: @tap.current_keg_id).order(finished_at: :desc).limit(10) %>
+  <% past_kegs = @tap.kegs.finished.includes(:beverage).order(end_time: :desc).limit(10) %>
   <% if past_kegs.any? %>
     <table>
       <thead>
@@ -151,8 +151,8 @@
         <% past_kegs.each do |keg| %>
           <tr>
             <td><%= link_to keg.beverage.name, keg %></td>
-            <td><%= keg.started_at&.strftime("%b %d, %Y") || "-" %></td>
-            <td><%= keg.finished_at&.strftime("%b %d, %Y") || "-" %></td>
+            <td><%= keg.start_time&.strftime("%b %d, %Y") || "-" %></td>
+            <td><%= keg.end_time&.strftime("%b %d, %Y") || "-" %></td>
             <td><%= keg.drinks.count %></td>
             <td><%= ((keg.full_volume_ml - keg.remaining_volume_ml) / 1000.0).round(1) %>L</td>
           </tr>
