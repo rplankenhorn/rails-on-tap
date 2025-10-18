@@ -1,0 +1,187 @@
+<% content_for :title, "#{@keg.beverage.name} - Kegs - Ruby On Tap" %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <h1><%= @keg.beverage.name %></h1>
+  <div>
+    <%= link_to "Edit", edit_keg_path(@keg), class: "btn" %>
+    <%= link_to "Back to Kegs", kegs_path, class: "btn" %>
+  </div>
+</div>
+
+<div class="grid">
+  <!-- Keg Details -->
+  <div class="card">
+    <h2>Keg Details</h2>
+    <table>
+      <tr>
+        <th>Status:</th>
+        <td>
+          <% case @keg.status %>
+          <% when 'available' %>
+            <span class="badge badge-info">Available</span>
+          <% when 'on_tap' %>
+            <span class="badge badge-success">On Tap</span>
+          <% when 'finished' %>
+            <span class="badge badge-danger">Finished</span>
+          <% end %>
+        </td>
+      </tr>
+      <tr>
+        <th>Size:</th>
+        <td><%= @keg.size_name %> (<%= number_to_human(@keg.full_volume_ml, units: { unit: "ml" }) %>)</td>
+      </tr>
+      <tr>
+        <th>Remaining:</th>
+        <td>
+          <%= number_to_human(@keg.remaining_volume_ml, units: { unit: "ml" }) %>
+          (<%= @keg.percent_full.round(1) %>%)
+        </td>
+      </tr>
+      <tr>
+        <th>Current Tap:</th>
+        <td>
+          <% if @keg.current_tap %>
+            <%= link_to @keg.current_tap.name, @keg.current_tap %>
+          <% else %>
+            <span style="color: #999;">Not on tap</span>
+          <% end %>
+        </td>
+      </tr>
+      <tr>
+        <th>Started:</th>
+        <td>
+          <% if @keg.started_at %>
+            <%= @keg.started_at.strftime("%B %d, %Y at %I:%M %p") %>
+          <% else %>
+            <span style="color: #999;">Not started</span>
+          <% end %>
+        </td>
+      </tr>
+      <tr>
+        <th>Finished:</th>
+        <td>
+          <% if @keg.finished_at %>
+            <%= @keg.finished_at.strftime("%B %d, %Y at %I:%M %p") %>
+          <% else %>
+            <span style="color: #999;">Still active</span>
+          <% end %>
+        </td>
+      </tr>
+    </table>
+    
+    <% if @keg.status == 'on_tap' %>
+      <%= button_to "End This Keg", end_keg_path(@keg), method: :post, class: "btn btn-danger", style: "margin-top: 1rem;", data: { confirm: "Are you sure you want to end this keg?" } %>
+    <% end %>
+  </div>
+
+  <!-- Beverage Info -->
+  <div class="card">
+    <h2>Beverage Information</h2>
+    <table>
+      <tr>
+        <th>Name:</th>
+        <td><%= @keg.beverage.name %></td>
+      </tr>
+      <tr>
+        <th>Producer:</th>
+        <td><%= @keg.beverage.producer.name %></td>
+      </tr>
+      <tr>
+        <th>Type:</th>
+        <td><span class="badge badge-info"><%= @keg.beverage.beverage_type.titleize %></span></td>
+      </tr>
+      <tr>
+        <th>Style:</th>
+        <td><%= @keg.beverage.style %></td>
+      </tr>
+      <% if @keg.beverage.abv %>
+        <tr>
+          <th>ABV:</th>
+          <td><%= @keg.beverage.abv %>%</td>
+        </tr>
+      <% end %>
+      <% if @keg.beverage.ibu %>
+        <tr>
+          <th>IBU:</th>
+          <td><%= @keg.beverage.ibu %></td>
+        </tr>
+      <% end %>
+      <% if @keg.beverage.description %>
+        <tr>
+          <th>Description:</th>
+          <td><%= @keg.beverage.description %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+</div>
+
+<!-- Volume Progress Bar -->
+<% if @keg.status != 'available' %>
+  <div class="card">
+    <h2>Volume Remaining</h2>
+    <div style="background: #ecf0f1; border-radius: 8px; height: 40px; margin: 1rem 0;">
+      <div style="background: #27ae60; height: 100%; border-radius: 8px; width: <%= @keg.percent_full %>%; transition: width 0.3s;"></div>
+    </div>
+    <p style="text-align: center; font-size: 1.2rem;">
+      <strong><%= number_to_human(@keg.remaining_volume_ml, units: { unit: "ml" }) %></strong> of 
+      <strong><%= number_to_human(@keg.full_volume_ml, units: { unit: "ml" }) %></strong> remaining
+    </p>
+  </div>
+<% end %>
+
+<!-- Recent Drinks -->
+<div class="card">
+  <h2>Recent Drinks from this Keg</h2>
+  <% if @keg.drinks.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Volume</th>
+          <th>Time</th>
+          <th>Session</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @keg.drinks.order(created_at: :desc).limit(20).each do |drink| %>
+          <tr>
+            <td><%= drink.user.display_name %></td>
+            <td><%= number_to_human(drink.volume_ml, units: { unit: "ml" }) %></td>
+            <td><%= time_ago_in_words(drink.created_at) %> ago</td>
+            <td>
+              <% if drink.drinking_session %>
+                <%= link_to drink.drinking_session.name, session_path(drink.drinking_session) %>
+              <% else %>
+                <span style="color: #999;">-</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <% if @keg.drinks.count > 20 %>
+      <p style="text-align: center; margin-top: 1rem; color: #666;">
+        Showing 20 of <%= @keg.drinks.count %> total drinks
+      </p>
+    <% end %>
+  <% else %>
+    <p style="color: #999; text-align: center; padding: 2rem;">No drinks recorded yet</p>
+  <% end %>
+</div>
+
+<!-- Stats Summary -->
+<div class="grid">
+  <div class="card" style="text-align: center;">
+    <h3 style="font-size: 2rem; color: #3498db;"><%= @keg.drinks.count %></h3>
+    <p style="color: #666;">Total Drinks</p>
+  </div>
+  <div class="card" style="text-align: center;">
+    <h3 style="font-size: 2rem; color: #27ae60;"><%= (@keg.full_volume_ml - @keg.remaining_volume_ml) / 1000.0 %>L</h3>
+    <p style="color: #666;">Volume Poured</p>
+  </div>
+  <div class="card" style="text-align: center;">
+    <h3 style="font-size: 2rem; color: #e74c3c;"><%= @keg.drinks.select(&:user_id).map(&:user_id).uniq.count %></h3>
+    <p style="color: #666;">Unique Drinkers</p>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  plugin_name: MyString
+  key: MyString
+  value: 
+
+two:
+  plugin_name: MyString
+  key: MyString
+  value: 

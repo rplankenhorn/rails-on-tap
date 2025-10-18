@@ -1,0 +1,41 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  beverage_type: MyString
+  style: MyString
+  description: MyText
+  vintage_year: 2025-10-18
+  abv_percent: 1.5
+  calories_per_ml: 1.5
+  carbs_per_ml: 1.5
+  color_hex: MyString
+  original_gravity: 1.5
+  specific_gravity: 1.5
+  srm: 1.5
+  ibu: 1.5
+  star_rating: 1.5
+  untappd_beer_id: 1
+  beverage_backend: MyString
+  beverage_backend_id: MyString
+  beverage_producer: one
+
+two:
+  name: MyString
+  beverage_type: MyString
+  style: MyString
+  description: MyText
+  vintage_year: 2025-10-18
+  abv_percent: 1.5
+  calories_per_ml: 1.5
+  carbs_per_ml: 1.5
+  color_hex: MyString
+  original_gravity: 1.5
+  specific_gravity: 1.5
+  srm: 1.5
+  ibu: 1.5
+  star_rating: 1.5
+  untappd_beer_id: 1
+  beverage_backend: MyString
+  beverage_backend_id: MyString
+  beverage_producer: two

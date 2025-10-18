@@ -1,0 +1,84 @@
+<% content_for :title, "Sessions - Ruby On Tap" %>
+
+<h1>Drinking Sessions</h1>
+
+<!-- Filter tabs -->
+<div style="margin-bottom: 1.5rem;">
+  <%= link_to "All", sessions_path, class: "btn #{params[:status].blank? ? 'btn-success' : ''}", style: "margin-right: 0.5rem;" %>
+  <%= link_to "Active", sessions_path(status: 'active'), class: "btn #{params[:status] == 'active' ? 'btn-success' : ''}", style: "margin-right: 0.5rem;" %>
+  <%= link_to "Completed", sessions_path(status: 'completed'), class: "btn #{params[:status] == 'completed' ? 'btn-success' : ''}" %>
+</div>
+
+<% if @sessions.any? %>
+  <div class="grid">
+    <% @sessions.each do |session| %>
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+          <h2 style="margin: 0;"><%= link_to session.name, session_path(session) %></h2>
+          <% if session.active? %>
+            <span class="badge badge-success">Active</span>
+          <% else %>
+            <span class="badge badge-info">Completed</span>
+          <% end %>
+        </div>
+
+        <div style="background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+          <p style="margin-bottom: 0.5rem;">
+            <strong>Started:</strong> <%= time_ago_in_words(session.start_time) %> ago
+          </p>
+          <% if session.end_time %>
+            <p style="margin-bottom: 0.5rem;">
+              <strong>Ended:</strong> <%= time_ago_in_words(session.end_time) %> ago
+            </p>
+            <p style="margin-bottom: 0;">
+              <strong>Duration:</strong> <%= distance_of_time_in_words(session.start_time, session.end_time) %>
+            </p>
+          <% end %>
+        </div>
+
+        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          <div style="text-align: center; padding: 1rem; background: #e3f2fd; border-radius: 4px;">
+            <h3 style="font-size: 1.5rem; color: #3498db; margin: 0;"><%= session.drinks.count %></h3>
+            <p style="color: #666; margin: 0;">Drinks</p>
+          </div>
+          <div style="text-align: center; padding: 1rem; background: #e8f5e9; border-radius: 4px;">
+            <h3 style="font-size: 1.5rem; color: #27ae60; margin: 0;"><%= session.drinks.select(&:user_id).map(&:user_id).uniq.count %></h3>
+            <p style="color: #666; margin: 0;">Participants</p>
+          </div>
+        </div>
+
+        <p style="color: #666; margin-bottom: 1rem;">
+          <strong>Total Volume:</strong> <%= (session.drinks.sum(&:volume_ml) / 1000.0).round(1) %>L
+        </p>
+
+        <%= link_to "View Details", session_path(session), class: "btn", style: "width: 100%;" %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @sessions.count >= 20 %>
+    <p style="text-align: center; margin-top: 1rem; color: #666;">
+      Showing 20 most recent sessions
+    </p>
+  <% end %>
+<% else %>
+  <div class="card" style="text-align: center; padding: 3rem;">
+    <p style="color: #999; font-size: 1.2rem;">No sessions found</p>
+  </div>
+<% end %>
+
+<!-- Summary Stats -->
+<div class="grid">
+  <div class="card" style="text-align: center;">
+    <h3 style="font-size: 2rem; color: #3498db;"><%= @sessions.count %></h3>
+    <p style="color: #666;">Total Sessions</p>
+  </div>
+  <div class="card" style="text-align: center;">
+    <h3 style="font-size: 2rem; color: #27ae60;"><%= @sessions.select(&:active?).count %></h3>
+    <p style="color: #666;">Active Now</p>
+  </div>
+  <div class="card" style="text-align: center;">
+    <h3 style="font-size: 2rem; color: #e74c3c;"><%= @sessions.sum { |s| s.drinks.count } %></h3>
+    <p style="color: #666;">Total Drinks</p>
+  </div>
+</div>

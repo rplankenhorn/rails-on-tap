@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  start_time: 2025-10-18 14:52:40
+  end_time: 2025-10-18 14:52:40
+  volume_ml: 1.5
+  timezone: MyString
+  name: MyString
+
+two:
+  start_time: 2025-10-18 14:52:40
+  end_time: 2025-10-18 14:52:40
+  volume_ml: 1.5
+  timezone: MyString
+  name: MyString

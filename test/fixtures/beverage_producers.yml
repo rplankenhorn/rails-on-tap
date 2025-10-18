@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  country: MyString
+  origin_state: MyString
+  origin_city: MyString
+  is_homebrew: false
+  url: MyString
+  description: MyText
+  beverage_backend: MyString
+  beverage_backend_id: MyString
+
+two:
+  name: MyString
+  country: MyString
+  origin_state: MyString
+  origin_city: MyString
+  is_homebrew: false
+  url: MyString
+  description: MyText
+  beverage_backend: MyString
+  beverage_backend_id: MyString

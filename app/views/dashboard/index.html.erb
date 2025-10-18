@@ -1,0 +1,143 @@
+<% content_for :title, "Dashboard - Ruby On Tap" %>
+
+<h1>Dashboard</h1>
+
+<div class="grid">
+  <!-- Active Taps Section -->
+  <div class="card">
+    <h2>🚰 Active Taps</h2>
+    <% if @active_taps.any? %>
+      <% @active_taps.each do |tap| %>
+        <div style="padding: 1rem; margin-bottom: 1rem; background: #f8f9fa; border-radius: 4px;">
+          <h3><%= tap.name %></h3>
+          <% if tap.current_keg %>
+            <p><strong><%= tap.current_keg.beverage.name %></strong></p>
+            <p style="color: #666; font-size: 0.9rem;">
+              <%= tap.current_keg.beverage.producer.name %> - 
+              <%= tap.current_keg.beverage.style %>
+              <% if tap.current_keg.beverage.abv %>
+                | <%= tap.current_keg.beverage.abv %>% ABV
+              <% end %>
+            </p>
+            <div style="background: #ecf0f1; border-radius: 4px; height: 20px; margin: 0.5rem 0;">
+              <div style="background: #27ae60; height: 100%; border-radius: 4px; width: <%= tap.current_keg.percent_full %>%;"></div>
+            </div>
+            <p style="font-size: 0.9rem;">
+              <%= number_to_human(tap.current_keg.remaining_volume_ml, units: { unit: "ml" }) %> remaining 
+              (<%= tap.current_keg.percent_full.round(1) %>%)
+            </p>
+            <% if tap.current_temperature %>
+              <p style="font-size: 0.9rem;">🌡️ <%= tap.current_temperature.round(1) %>°C</p>
+            <% end %>
+          <% else %>
+            <p style="color: #999;">No keg attached</p>
+          <% end %>
+          <%= link_to "View Tap", tap_path(tap), class: "btn", style: "margin-top: 0.5rem;" %>
+        </div>
+      <% end %>
+    <% else %>
+      <p style="color: #999;">No active taps</p>
+    <% end %>
+    <%= link_to "Manage Taps", taps_path, class: "btn" %>
+  </div>
+
+  <!-- Recent Drinks Section -->
+  <div class="card">
+    <h2>🍺 Recent Drinks</h2>
+    <% if @recent_drinks.any? %>
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Beverage</th>
+            <th>Volume</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @recent_drinks.each do |drink| %>
+            <tr>
+              <td><%= drink.user.display_name %></td>
+              <td><%= drink.keg.beverage.name %></td>
+              <td><%= number_to_human(drink.volume_ml, units: { unit: "ml" }) %></td>
+              <td><%= time_ago_in_words(drink.created_at) %> ago</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <%= link_to "View All Drinks", drinks_path, class: "btn", style: "margin-top: 1rem;" %>
+    <% else %>
+      <p style="color: #999;">No drinks yet</p>
+    <% end %>
+  </div>
+</div>
+
+<div class="grid">
+  <!-- Active Sessions Section -->
+  <div class="card">
+    <h2>🎉 Active Sessions</h2>
+    <% if @active_sessions.any? %>
+      <% @active_sessions.each do |session| %>
+        <div style="padding: 1rem; margin-bottom: 1rem; background: #f8f9fa; border-radius: 4px;">
+          <h3><%= session.name %></h3>
+          <p style="color: #666;">
+            Started <%= time_ago_in_words(session.start_time) %> ago
+          </p>
+          <p>
+            <strong><%= session.drinks.count %></strong> drinks | 
+            <strong><%= session.drinks.select(&:user_id).map(&:user_id).uniq.count %></strong> participants
+          </p>
+          <%= link_to "View Session", session_path(session), class: "btn", style: "margin-top: 0.5rem;" %>
+        </div>
+      <% end %>
+    <% else %>
+      <p style="color: #999;">No active sessions</p>
+    <% end %>
+    <%= link_to "View All Sessions", sessions_path, class: "btn" %>
+  </div>
+
+  <!-- Recent Events Section -->
+  <div class="card">
+    <h2>📋 Recent Events</h2>
+    <% if @recent_events.any? %>
+      <div style="max-height: 400px; overflow-y: auto;">
+        <% @recent_events.each do |event| %>
+          <div style="padding: 0.75rem; border-bottom: 1px solid #ecf0f1;">
+            <p style="font-size: 0.9rem; color: #666;">
+              <%= time_ago_in_words(event.created_at) %> ago
+            </p>
+            <p><strong><%= event.kind.titleize %></strong></p>
+            <% if event.user %>
+              <p style="font-size: 0.9rem;">by <%= event.user.display_name %></p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p style="color: #999;">No recent events</p>
+    <% end %>
+  </div>
+</div>
+
+<!-- Statistics Section -->
+<div class="card">
+  <h2>📊 Statistics</h2>
+  <div class="grid">
+    <div style="text-align: center; padding: 1rem;">
+      <h3 style="font-size: 2rem; color: #3498db;"><%= @total_drinks %></h3>
+      <p style="color: #666;">Total Drinks</p>
+    </div>
+    <div style="text-align: center; padding: 1rem;">
+      <h3 style="font-size: 2rem; color: #27ae60;"><%= @total_volume_liters.round(1) %>L</h3>
+      <p style="color: #666;">Total Volume</p>
+    </div>
+    <div style="text-align: center; padding: 1rem;">
+      <h3 style="font-size: 2rem; color: #e74c3c;"><%= @active_kegs_count %></h3>
+      <p style="color: #666;">Active Kegs</p>
+    </div>
+    <div style="text-align: center; padding: 1rem;">
+      <h3 style="font-size: 2rem; color: #9b59b6;"><%= @total_users %></h3>
+      <p style="color: #666;">Total Users</p>
+    </div>
+  </div>
+</div>

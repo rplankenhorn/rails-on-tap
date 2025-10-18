@@ -1,0 +1,35 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  server_version: MyString
+  is_setup: false
+  registration_id: MyText
+  volume_display_units: MyString
+  temperature_display_units: MyString
+  title: MyString
+  google_analytics_id: MyString
+  session_timeout_minutes: 1
+  privacy: MyString
+  registration_mode: MyString
+  timezone: MyString
+  enable_sensing: false
+  enable_users: false
+  email_config: MyText
+
+two:
+  name: MyString
+  server_version: MyString
+  is_setup: false
+  registration_id: MyText
+  volume_display_units: MyString
+  temperature_display_units: MyString
+  title: MyString
+  google_analytics_id: MyString
+  session_timeout_minutes: 1
+  privacy: MyString
+  registration_mode: MyString
+  timezone: MyString
+  enable_sensing: false
+  enable_users: false
+  email_config: MyText

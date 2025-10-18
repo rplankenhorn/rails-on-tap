@@ -1,0 +1,52 @@
+<% content_for :title, "Edit #{@tap.name} - Taps - Ruby On Tap" %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <h1>Edit Tap: <%= @tap.name %></h1>
+  <%= link_to "Back to Tap", @tap, class: "btn" %>
+</div>
+
+<div class="card">
+  <%= form_with(model: @tap, local: true) do |form| %>
+    <% if @tap.errors.any? %>
+      <div style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+        <h3>Please fix the following errors:</h3>
+        <ul>
+          <% @tap.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div style="margin-bottom: 1rem;">
+      <%= form.label :name, style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
+      <%= form.text_field :name, style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" %>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <%= form.label :description, style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
+      <%= form.text_area :description, rows: 3, style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" %>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <%= form.label :meter_id, "Flow Meter", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
+      <%= form.collection_select :meter_id, FlowMeter.all, :id, :meter_name, { prompt: "Select a flow meter" }, { style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" } %>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <%= form.label :temperature_sensor_id, "Temperature Sensor", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
+      <%= form.collection_select :temperature_sensor_id, ThermoSensor.all, :id, :sensor_name, { prompt: "Select a temperature sensor" }, { style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" } %>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <%= form.label :notes, style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
+      <%= form.text_area :notes, rows: 3, style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" %>
+    </div>
+
+    <div>
+      <%= form.submit "Update Tap", class: "btn btn-success" %>
+      <%= link_to "Cancel", @tap, class: "btn" %>
+      <%= link_to "Delete Tap", @tap, method: :delete, data: { confirm: "Are you sure? This will not delete the attached keg." }, class: "btn btn-danger", style: "float: right;" %>
+    </div>
+  <% end %>
+</div>

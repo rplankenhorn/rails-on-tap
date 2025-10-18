@@ -1,0 +1,53 @@
+<% content_for :title, "Attach Keg - #{@tap.name} - Ruby On Tap" %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <h1>Attach Keg to <%= @tap.name %></h1>
+  <%= link_to "Back to Tap", @tap, class: "btn" %>
+</div>
+
+<div class="card">
+  <%= form_with(url: attach_keg_tap_path(@tap), method: :post, local: true) do |form| %>
+    <div style="margin-bottom: 1.5rem;">
+      <%= form.label :keg_id, "Select a keg to attach:", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
+      <% available_kegs = Keg.where(status: 'available').includes(beverage: :producer) %>
+      <% if available_kegs.any? %>
+        <div style="max-height: 500px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px;">
+          <% available_kegs.each do |keg| %>
+            <label style="display: block; padding: 1rem; border-bottom: 1px solid #ecf0f1; cursor: pointer; transition: background 0.2s;" 
+                   onmouseover="this.style.background='#f8f9fa'" 
+                   onmouseout="this.style.background='white'">
+              <%= form.radio_button :keg_id, keg.id, style: "margin-right: 0.5rem;" %>
+              <strong style="font-size: 1.1rem;"><%= keg.beverage.name %></strong><br>
+              <span style="color: #666; font-size: 0.9rem; margin-left: 1.5rem;">
+                <%= keg.beverage.producer.name %> - 
+                <%= keg.beverage.style %>
+                <% if keg.beverage.abv %>
+                  | <%= keg.beverage.abv %>% ABV
+                <% end %>
+                <br>
+                Size: <%= keg.size_name %> (<%= number_to_human(keg.full_volume_ml, units: { unit: "ml" }) %>)
+              </span>
+            </label>
+          <% end %>
+        </div>
+      <% else %>
+        <p style="color: #999; padding: 2rem; text-align: center; background: #f8f9fa; border-radius: 4px;">
+          No available kegs. <%= link_to "Create a new keg", new_keg_path %>
+        </p>
+      <% end %>
+    </div>
+
+    <% if available_kegs.any? %>
+      <div>
+        <%= form.submit "Attach Keg", class: "btn btn-success" %>
+        <%= link_to "Cancel", @tap, class: "btn" %>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<!-- Quick Keg Creation -->
+<div class="card">
+  <h2>Or Create a New Keg</h2>
+  <%= link_to "Create New Keg", new_keg_path, class: "btn btn-success" %>
+</div>

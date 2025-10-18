@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ticks: 1
+  volume_ml: 1.5
+  time: 2025-10-18 14:52:39
+  duration: 1
+  shout: MyText
+  tick_time_series: MyText
+  user: one
+  keg: one
+  drinking_session: one
+
+two:
+  ticks: 1
+  volume_ml: 1.5
+  time: 2025-10-18 14:52:39
+  duration: 1
+  shout: MyText
+  tick_time_series: MyText
+  user: two
+  keg: two
+  drinking_session: two

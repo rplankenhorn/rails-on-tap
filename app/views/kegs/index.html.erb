@@ -1,0 +1,106 @@
+<% content_for :title, "Kegs - Ruby On Tap" %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <h1>Kegs</h1>
+  <%= link_to "Add New Keg", new_keg_path, class: "btn btn-success" %>
+</div>
+
+<!-- Filter tabs -->
+<div style="margin-bottom: 1.5rem;">
+  <%= link_to "All", kegs_path, class: "btn #{params[:status].blank? ? 'btn-success' : ''}", style: "margin-right: 0.5rem;" %>
+  <%= link_to "Available", kegs_path(status: 'available'), class: "btn #{params[:status] == 'available' ? 'btn-success' : ''}", style: "margin-right: 0.5rem;" %>
+  <%= link_to "On Tap", kegs_path(status: 'on_tap'), class: "btn #{params[:status] == 'on_tap' ? 'btn-success' : ''}", style: "margin-right: 0.5rem;" %>
+  <%= link_to "Finished", kegs_path(status: 'finished'), class: "btn #{params[:status] == 'finished' ? 'btn-success' : ''}" %>
+</div>
+
+<div class="card">
+  <% if @kegs.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>Beverage</th>
+          <th>Producer</th>
+          <th>Type</th>
+          <th>Size</th>
+          <th>Status</th>
+          <th>Remaining</th>
+          <th>Tap</th>
+          <th>Started</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @kegs.each do |keg| %>
+          <tr>
+            <td>
+              <strong><%= link_to keg.beverage.name, keg %></strong><br>
+              <span style="font-size: 0.875rem; color: #666;"><%= keg.beverage.style %></span>
+            </td>
+            <td><%= keg.beverage.producer.name %></td>
+            <td><span class="badge badge-info"><%= keg.beverage.beverage_type.titleize %></span></td>
+            <td><%= keg.size_name %> (<%= number_to_human(keg.full_volume_ml, units: { unit: "ml" }) %>)</td>
+            <td>
+              <% case keg.status %>
+              <% when 'available' %>
+                <span class="badge badge-info">Available</span>
+              <% when 'on_tap' %>
+                <span class="badge badge-success">On Tap</span>
+              <% when 'finished' %>
+                <span class="badge badge-danger">Finished</span>
+              <% end %>
+            </td>
+            <td>
+              <% if keg.status != 'available' %>
+                <div style="background: #ecf0f1; border-radius: 4px; height: 10px; width: 100px; display: inline-block;">
+                  <div style="background: #27ae60; height: 100%; border-radius: 4px; width: <%= keg.percent_full %>%;"></div>
+                </div>
+                <%= keg.percent_full.round(0) %>%
+              <% else %>
+                <span style="color: #999;">Full</span>
+              <% end %>
+            </td>
+            <td>
+              <% if keg.current_tap %>
+                <%= keg.current_tap.name %>
+              <% else %>
+                <span style="color: #999;">-</span>
+              <% end %>
+            </td>
+            <td>
+              <% if keg.started_at %>
+                <%= keg.started_at.strftime("%b %d, %Y") %>
+              <% else %>
+                <span style="color: #999;">Not started</span>
+              <% end %>
+            </td>
+            <td>
+              <%= link_to "View", keg, class: "btn", style: "font-size: 0.875rem; padding: 0.25rem 0.5rem;" %>
+              <%= link_to "Edit", edit_keg_path(keg), class: "btn", style: "font-size: 0.875rem; padding: 0.25rem 0.5rem;" %>
+              <% if keg.status == 'on_tap' %>
+                <%= button_to "End Keg", end_keg_path(keg), method: :post, class: "btn btn-danger", style: "font-size: 0.875rem; padding: 0.25rem 0.5rem; display: inline;" %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="color: #999; text-align: center; padding: 2rem;">No kegs found</p>
+  <% end %>
+</div>
+
+<!-- Summary Stats -->
+<div class="grid" style="margin-top: 1.5rem;">
+  <div class="card" style="text-align: center;">
+    <h3 style="font-size: 2rem; color: #3498db;"><%= @kegs.where(status: 'available').count %></h3>
+    <p style="color: #666;">Available Kegs</p>
+  </div>
+  <div class="card" style="text-align: center;">
+    <h3 style="font-size: 2rem; color: #27ae60;"><%= @kegs.where(status: 'on_tap').count %></h3>
+    <p style="color: #666;">On Tap</p>
+  </div>
+  <div class="card" style="text-align: center;">
+    <h3 style="font-size: 2rem; color: #e74c3c;"><%= @kegs.where(status: 'finished').count %></h3>
+    <p style="color: #666;">Finished</p>
+  </div>
+</div>
