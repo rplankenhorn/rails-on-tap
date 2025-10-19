@@ -39,6 +39,12 @@ Rails.application.routes.draw do
 
   resources :beverage_producers
 
+  resources :kegboard_configs do
+    member do
+      post :test_connection
+    end
+  end
+
   resources :users, only: [ :index, :show ] do
     member do
       get :stats

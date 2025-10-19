@@ -51,6 +51,8 @@
       .badge-warning { background: #fff3cd; color: #856404; }
       .badge-danger { background: #f8d7da; color: #721c24; }
       .badge-info { background: #d1ecf1; color: #0c5460; }
+      .badge-secondary { background: #e2e3e5; color: #383d41; }
+      .badge-primary { background: #cce5ff; color: #004085; }
       .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
     </style>
   </head>
@@ -64,6 +66,7 @@
         <%= link_to "Taps", taps_path %>
         <%= link_to "Drinks", drinks_path %>
         <%= link_to "Sessions", sessions_path %>
+        <%= link_to "⚙️ Hardware", kegboard_configs_path %>
       </nav>
       <div class="user-menu">
         <% if user_signed_in? %>
@@ -77,10 +80,10 @@
     </header>
 
     <% if notice %>
-      <div class="flash notice"><%= notice %></div>
+      <div class="flash notice"><%= notice.html_safe %></div>
     <% end %>
     <% if alert %>
-      <div class="flash alert"><%= alert %></div>
+      <div class="flash alert"><%= alert.html_safe %></div>
     <% end %>
 
     <div class="container">

@@ -1,0 +1,141 @@
+substitutions:
+  meter_0_topic: "meter/0"
+  meter_1_topic: "meter/1"
+  meter_2_topic: "meter/2"
+
+esphome:
+  name: kegboard
+  friendly_name: Kegboard
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+
+logger:
+
+mqtt:
+  broker: !secret mqtt_server   # 👈 replace with your MQTT broker IP
+  username: !secret mqtt_user  # optional
+  password: !secret mqtt_password  # optional
+  discovery: true
+  id: kegbot
+  topic_prefix: "kegbot"
+
+api:
+ota:
+  platform: esphome
+
+# --- Persistent total pulse counters (one per flow meter) ---
+globals:
+  - id: ticks_meter1
+    type: uint64_t
+    restore_value: yes
+    initial_value: '0'
+  - id: ticks_meter2
+    type: uint64_t
+    restore_value: yes
+    initial_value: '0'
+  - id: ticks_meter3
+    type: uint64_t
+    restore_value: yes
+    initial_value: '0'
+
+# --- Flow Meter Inputs ---
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO25
+      mode:
+        input: true
+        pullup: true
+    name: "Flow Meter 0 Tick"
+    id: flow0
+    on_press:
+      then:
+        - lambda: |-
+            id(ticks_meter1)++;
+
+  - platform: gpio
+    pin:
+      number: GPIO26
+      mode:
+        input: true
+        pullup: true
+    name: "Flow Meter 1 Tick"
+    id: flow1
+    on_press:
+      then:
+        - lambda: |-
+            id(ticks_meter2)++;
+
+  - platform: gpio
+    pin:
+      number: GPIO27
+      mode:
+        input: true
+        pullup: true
+    name: "Flow Meter 2 Tick"
+    id: flow2
+    on_press:
+      then:
+        - lambda: |-
+            id(ticks_meter3)++;
+
+# --- Sensor entities for Home Assistant ---
+sensor:
+  - platform: template
+    name: "Flow Meter 0 Total Ticks"
+    id: meter0_ticks_sensor
+    lambda: |-
+      return id(ticks_meter1);
+    update_interval: 5s
+    unit_of_measurement: "ticks"
+    icon: "mdi:counter"
+    filters:
+      - delta: 1  # Only publish when value changes by at least 1
+    on_value:
+      then:
+        - mqtt.publish:
+            topic: ${meter_0_topic}
+            payload: !lambda |-
+              return to_string((int)x);
+    
+  - platform: template
+    name: "Flow Meter 1 Total Ticks"
+    id: meter1_ticks_sensor
+    lambda: |-
+      return id(ticks_meter2);
+    update_interval: 5s
+    unit_of_measurement: "ticks"
+    icon: "mdi:counter"
+    filters:
+      - delta: 1  # Only publish when value changes by at least 1
+    on_value:
+      then:
+        - mqtt.publish:
+            topic: ${meter_1_topic}
+            payload: !lambda |-
+              return to_string((int)x);
+    
+  - platform: template
+    name: "Flow Meter 2 Total Ticks"
+    id: meter2_ticks_sensor
+    lambda: |-
+      return id(ticks_meter3);
+    update_interval: 5s
+    unit_of_measurement: "ticks"
+    icon: "mdi:counter"
+    filters:
+      - delta: 1  # Only publish when value changes by at least 1
+    on_value:
+      then:
+        - mqtt.publish:
+            topic: ${meter_2_topic}
+            payload: !lambda |-
+              return to_string((int)x);
