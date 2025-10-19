@@ -179,6 +179,18 @@ end
 
 puts "✓ Admin API key created: #{api_key.key}"
 
+# Create example kegboard configuration (commented out - user should configure with their own settings)
+# KegboardConfig.find_or_create_by(name: "ESP32 Flow Meters") do |config|
+#   config.config_type = "mqtt"
+#   config.mqtt_broker = "192.168.1.100"  # Change to your MQTT broker
+#   config.mqtt_port = 1883
+#   config.mqtt_username = ""  # Optional
+#   config.mqtt_password = ""  # Optional
+#   config.mqtt_topic_prefix = "kegbot"
+#   config.enabled = true
+# end
+# puts "✓ Example kegboard configuration created"
+
 puts "\n" + "=" * 50
 puts "Seed data created successfully!"
 puts "=" * 50
@@ -186,4 +198,5 @@ puts "\nYou can now:"
 puts "  1. Visit http://localhost:3000"
 puts "  2. Login with username: admin, password: password"
 puts "  3. Use API key: #{api_key.key}"
+puts "  4. Configure your hardware at http://localhost:3000/kegboard_configs"
 puts "\n⚠️  Remember to change the admin password!"

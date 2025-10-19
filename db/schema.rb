@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_18_200704) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_18_204402) do
   create_table "api_keys", force: :cascade do |t|
     t.string "key"
     t.boolean "active"
@@ -158,8 +158,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_18_200704) do
     t.integer "temperature_sensor_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "meter_id"
     t.index ["current_keg_id"], name: "index_keg_taps_on_current_keg_id"
+    t.index ["meter_id"], name: "index_keg_taps_on_meter_id"
     t.index ["temperature_sensor_id"], name: "index_keg_taps_on_temperature_sensor_id"
+  end
+
+  create_table "kegboard_configs", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "config_type", default: "mqtt", null: false
+    t.string "mqtt_broker"
+    t.integer "mqtt_port", default: 1883
+    t.string "mqtt_username"
+    t.string "mqtt_password"
+    t.string "mqtt_topic_prefix", default: "kegbot"
+    t.boolean "enabled", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["enabled"], name: "index_kegboard_configs_on_enabled"
+    t.index ["name"], name: "index_kegboard_configs_on_name", unique: true
   end
 
   create_table "kegbot_sites", force: :cascade do |t|
@@ -310,6 +327,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_18_200704) do
   add_foreign_key "flow_toggles", "hardware_controllers", column: "controller_id"
   add_foreign_key "flow_toggles", "keg_taps"
   add_foreign_key "invitations", "invited_bies"
+  add_foreign_key "keg_taps", "flow_meters", column: "meter_id"
   add_foreign_key "keg_taps", "kegs", column: "current_keg_id"
   add_foreign_key "keg_taps", "thermo_sensors", column: "temperature_sensor_id"
   add_foreign_key "kegs", "beverages"

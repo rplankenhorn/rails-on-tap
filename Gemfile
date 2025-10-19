@@ -37,6 +37,9 @@ gem "groupdate"
 # Pagination
 gem "kaminari"
 
+# MQTT client for kegboard integration
+gem "mqtt"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 

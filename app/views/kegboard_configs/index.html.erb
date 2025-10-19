@@ -1,0 +1,93 @@
+<% content_for :title, "Kegboard Configuration - Ruby On Tap" %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <h1>⚙️ Kegboard Configuration</h1>
+  <%= link_to "➕ Add Configuration", new_kegboard_config_path, class: "btn btn-success" %>
+</div>
+
+<% if @kegboard_configs.any? %>
+  <div class="grid">
+    <% @kegboard_configs.each do |config| %>
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+          <div>
+            <h3 style="margin: 0 0 0.5rem 0;">
+              <%= config.name %>
+              <% if config.enabled %>
+                <span class="badge badge-success">Active</span>
+              <% else %>
+                <span class="badge badge-secondary">Disabled</span>
+              <% end %>
+            </h3>
+            <p style="color: #666; margin: 0;">
+              <strong>Type:</strong> <%= config.config_type.upcase %>
+            </p>
+          </div>
+        </div>
+
+        <% if config.config_type == "mqtt" %>
+          <table style="margin-bottom: 1rem;">
+            <tr>
+              <th>Broker:</th>
+              <td><%= config.mqtt_broker %>:<%= config.mqtt_port %></td>
+            </tr>
+            <tr>
+              <th>Topic Prefix:</th>
+              <td><code><%= config.mqtt_topic_prefix %></code></td>
+            </tr>
+            <% if config.mqtt_username.present? %>
+              <tr>
+                <th>Username:</th>
+                <td><%= config.mqtt_username %></td>
+              </tr>
+            <% end %>
+            <tr>
+              <th>Example Topics:</th>
+              <td>
+                <code><%= config.meter_topic(0) %></code><br>
+                <code><%= config.meter_topic(1) %></code><br>
+                <code><%= config.meter_topic(2) %></code>
+              </td>
+            </tr>
+          </table>
+        <% end %>
+
+        <div style="display: flex; gap: 0.5rem;">
+          <%= link_to "Edit", edit_kegboard_config_path(config), class: "btn" %>
+          <%= button_to "Test Connection", test_connection_kegboard_config_path(config), method: :post, class: "btn btn-primary" %>
+          <%= link_to "Delete", kegboard_config_path(config), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="card" style="text-align: center; padding: 3rem;">
+    <h3 style="color: #999; margin-bottom: 1rem;">No Kegboard Configuration</h3>
+    <p style="color: #666; margin-bottom: 1.5rem;">
+      Configure how Ruby On Tap connects to your kegboard hardware (ESP32, Arduino, etc.)
+    </p>
+    <%= link_to "Add Configuration", new_kegboard_config_path, class: "btn btn-success" %>
+  </div>
+<% end %>
+
+<div class="card" style="margin-top: 2rem; background: #f8f9fa;">
+  <h3>📖 About Kegboard Configuration</h3>
+  <p>
+    Ruby On Tap supports multiple methods for connecting to flow meter hardware:
+  </p>
+  <ul>
+    <li><strong>MQTT:</strong> Connect to an ESP32 or similar device publishing flow meter data via MQTT (recommended)</li>
+    <li><strong>Serial/USB:</strong> Direct connection to Arduino or Kegboard devices (coming soon)</li>
+  </ul>
+  
+  <h4 style="margin-top: 1.5rem;">ESP32 MQTT Setup</h4>
+  <p>Your ESP32 configuration publishes to topics like:</p>
+  <ul>
+    <li><code>kegbot/meter/0</code> - Flow meter 0 tick count</li>
+    <li><code>kegbot/meter/1</code> - Flow meter 1 tick count</li>
+    <li><code>kegbot/meter/2</code> - Flow meter 2 tick count</li>
+  </ul>
+  <p>
+    Make sure your MQTT broker is accessible and the topic prefix matches your ESP32 configuration.
+  </p>
+</div>

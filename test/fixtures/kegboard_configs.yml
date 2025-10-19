@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  config_type: MyString
+  mqtt_broker: MyString
+  mqtt_port: 1
+  mqtt_username: MyString
+  mqtt_password: MyString
+  mqtt_topic_prefix: MyString
+  enabled: false
+
+two:
+  name: MyString
+  config_type: MyString
+  mqtt_broker: MyString
+  mqtt_port: 1
+  mqtt_username: MyString
+  mqtt_password: MyString
+  mqtt_topic_prefix: MyString
+  enabled: false

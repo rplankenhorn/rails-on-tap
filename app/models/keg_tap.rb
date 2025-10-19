@@ -2,7 +2,7 @@ class KegTap < ApplicationRecord
   # Associations
   belongs_to :current_keg, class_name: "Keg", optional: true
   belongs_to :temperature_sensor, class_name: "ThermoSensor", optional: true
-  has_one :meter, class_name: "FlowMeter", dependent: :nullify
+  belongs_to :meter, class_name: "FlowMeter", optional: true
   has_one :flow_toggle, class_name: "FlowToggle", dependent: :nullify
   has_many :kegs, dependent: :nullify
 

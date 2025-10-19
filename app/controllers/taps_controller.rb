@@ -18,7 +18,7 @@ class TapsController < ApplicationController
     @tap = KegTap.new(tap_params)
 
     if @tap.save
-      redirect_to @tap, notice: "Tap was successfully created."
+      redirect_to tap_path(@tap), notice: "Tap was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
@@ -29,7 +29,7 @@ class TapsController < ApplicationController
 
   def update
     if @tap.update(tap_params)
-      redirect_to @tap, notice: "Tap was successfully updated."
+      redirect_to tap_path(@tap), notice: "Tap was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -38,14 +38,14 @@ class TapsController < ApplicationController
   def attach_keg
     keg = Keg.find(params[:keg_id])
     @tap.attach_keg!(keg)
-    redirect_to @tap, notice: "Keg attached successfully."
+    redirect_to tap_path(@tap), notice: "Keg attached successfully."
   rescue => e
-    redirect_to @tap, alert: "Error: #{e.message}"
+    redirect_to tap_path(@tap), alert: "Error: #{e.message}"
   end
 
   def detach_keg
     @tap.end_current_keg!
-    redirect_to @tap, notice: "Keg detached successfully."
+    redirect_to tap_path(@tap), notice: "Keg detached successfully."
   end
 
   private
@@ -55,6 +55,6 @@ class TapsController < ApplicationController
   end
 
   def tap_params
-    params.require(:keg_tap).permit(:name, :notes, :sort_order)
+    params.require(:keg_tap).permit(:name, :notes, :sort_order, :meter_id, :temperature_sensor_id)
   end
 end
