@@ -1,4 +1,4 @@
-<% content_for :title, "Kegboard Configuration - Ruby On Tap" %>
+<% content_for :title, "Kegboard Configuration - Rails on Tap" %>
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
   <h1>⚙️ Kegboard Configuration</h1>
@@ -64,7 +64,7 @@
   <div class="card" style="text-align: center; padding: 3rem;">
     <h3 style="color: #999; margin-bottom: 1rem;">No Kegboard Configuration</h3>
     <p style="color: #666; margin-bottom: 1.5rem;">
-      Configure how Ruby On Tap connects to your kegboard hardware (ESP32, Arduino, etc.)
+      Configure how Rails on Tap connects to your kegboard hardware (ESP32, Arduino, etc.)
     </p>
     <%= link_to "Add Configuration", new_kegboard_config_path, class: "btn btn-success" %>
   </div>
@@ -73,7 +73,7 @@
 <div class="card" style="margin-top: 2rem; background: #f8f9fa;">
   <h3>📖 About Kegboard Configuration</h3>
   <p>
-    Ruby On Tap supports multiple methods for connecting to flow meter hardware:
+    Rails on Tap supports multiple methods for connecting to flow meter hardware:
   </p>
   <ul>
     <li><strong>MQTT:</strong> Connect to an ESP32 or similar device publishing flow meter data via MQTT (recommended)</li>

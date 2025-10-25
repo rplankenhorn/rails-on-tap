@@ -5,7 +5,7 @@ class Drink < ApplicationRecord
   belongs_to :drinking_session, optional: true
   has_many :events, class_name: "SystemEvent", dependent: :destroy
   has_many :stats, dependent: :destroy
-  has_one :picture, dependent: :nullify
+  has_many :pictures, dependent: :nullify
 
   # Validations
   validates :ticks, presence: true, numericality: { only_integer: true, greater_than: 0 }

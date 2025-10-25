@@ -2,7 +2,7 @@
 
 ## Overview
 
-Ruby On Tap now has full MQTT support for connecting to ESP32-based kegboards! The connection test feature is fully implemented and working.
+Rails on Tap now has full MQTT support for connecting to ESP32-based kegboards! The connection test feature is fully implemented and working.
 
 ## Features Implemented
 

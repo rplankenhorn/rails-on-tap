@@ -1,0 +1,60 @@
+<% content_for :title, "Pictures - Rails on Tap" %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <h1>Pictures</h1>
+  <%= link_to "📸 Upload Picture", new_picture_path, class: "btn btn-success" %>
+</div>
+
+<% if @pictures.any? %>
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+    <% @pictures.each do |picture| %>
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <%= link_to picture_path(picture) do %>
+          <% if picture.image.attached? %>
+            <% if picture.image.content_type == "image/svg+xml" %>
+              <%= image_tag picture.image, 
+                  style: "width: 100%; height: 300px; object-fit: cover;" %>
+            <% else %>
+              <%= image_tag picture.image.variant(resize_to_limit: [600, 600]), 
+                  style: "width: 100%; height: 300px; object-fit: cover;" %>
+            <% end %>
+          <% else %>
+            <div style="width: 100%; height: 300px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;">
+              No Image
+            </div>
+          <% end %>
+        <% end %>
+        
+        <div style="padding: 1rem;">
+          <% if picture.caption.present? %>
+            <p style="margin: 0 0 0.5rem 0; font-weight: 600;"><%= picture.caption %></p>
+          <% else %>
+            <p style="margin: 0 0 0.5rem 0; font-weight: 600; color: #999;"><%= picture.get_caption %></p>
+          <% end %>
+          
+          <div style="font-size: 0.875rem; color: #666; margin-bottom: 0.5rem;">
+            <% if picture.user %>
+              By <%= picture.user.display_name || picture.user.username %>
+            <% end %>
+            <br>
+            <%= time_ago_in_words(picture.time) %> ago
+          </div>
+
+          <% if picture.drink %>
+            <%= link_to "View Drink", drink_path(picture.drink), class: "btn", style: "font-size: 0.875rem; padding: 0.25rem 0.5rem;" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div style="margin-top: 2rem;">
+    <%= paginate @pictures %>
+  </div>
+<% else %>
+  <div class="card" style="text-align: center; padding: 3rem;">
+    <p style="font-size: 1.125rem; color: #666; margin-bottom: 1rem;">No pictures yet!</p>
+    <p style="color: #999;">Upload pictures to capture your best pours and moments.</p>
+    <%= link_to "📸 Upload Your First Picture", new_picture_path, class: "btn btn-success", style: "margin-top: 1rem;" %>
+  </div>
+<% end %>

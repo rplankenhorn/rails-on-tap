@@ -1,0 +1,70 @@
+<% content_for :title, "#{@picture.get_caption} - Rails on Tap" %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <h1>Picture</h1>
+  <div>
+    <%= link_to "Back to Pictures", pictures_path, class: "btn" %>
+    <%= button_to "Delete", picture_path(@picture), method: :delete, 
+        data: { confirm: "Are you sure you want to delete this picture?" },
+        class: "btn btn-danger" %>
+  </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+  <div class="card" style="padding: 0; overflow: hidden;">
+    <% if @picture.image.attached? %>
+      <%= image_tag @picture.image, style: "width: 100%; height: auto;" %>
+    <% else %>
+      <div style="width: 100%; height: 400px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;">
+        No Image Available
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <div class="card">
+      <h2 style="margin-top: 0;">Details</h2>
+
+      <% if @picture.caption.present? %>
+        <p style="font-size: 1.125rem; margin-bottom: 1rem;"><strong><%= @picture.caption %></strong></p>
+      <% else %>
+        <p style="font-size: 1.125rem; margin-bottom: 1rem; color: #666;"><%= @picture.get_caption %></p>
+      <% end %>
+
+      <div style="margin-bottom: 1rem;">
+        <strong style="display: block; color: #666; font-size: 0.875rem;">Taken</strong>
+        <%= @picture.time.strftime("%B %d, %Y at %I:%M %p") %>
+        <br>
+        <small style="color: #999;"><%= time_ago_in_words(@picture.time) %> ago</small>
+      </div>
+
+      <% if @picture.user %>
+        <div style="margin-bottom: 1rem;">
+          <strong style="display: block; color: #666; font-size: 0.875rem;">By</strong>
+          <%= @picture.user.display_name || @picture.user.username %>
+        </div>
+      <% end %>
+
+      <% if @picture.drink %>
+        <div style="margin-bottom: 1rem;">
+          <strong style="display: block; color: #666; font-size: 0.875rem;">Associated Drink</strong>
+          <%= link_to "Drink ##{@picture.drink.id}", drink_path(@picture.drink), class: "btn", style: "margin-top: 0.25rem;" %>
+        </div>
+      <% end %>
+
+      <% if @picture.keg %>
+        <div style="margin-bottom: 1rem;">
+          <strong style="display: block; color: #666; font-size: 0.875rem;">Keg</strong>
+          <%= link_to @picture.keg.beverage.name, keg_path(@picture.keg), class: "btn", style: "margin-top: 0.25rem;" %>
+        </div>
+      <% end %>
+
+      <% if @picture.drinking_session %>
+        <div style="margin-bottom: 1rem;">
+          <strong style="display: block; color: #666; font-size: 0.875rem;">Session</strong>
+          <%= link_to "Session ##{@picture.drinking_session.id}", session_path(@picture.drinking_session), class: "btn", style: "margin-top: 0.25rem;" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

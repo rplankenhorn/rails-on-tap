@@ -1,2 +1,158 @@
-<h1>Drinks#show</h1>
-<p>Find me in app/views/drinks/show.html.erb</p>
+<% content_for :title, "Drink ##{@drink.id} - Rails on Tap" %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <h1>Drink #<%= @drink.id %></h1>
+  <div>
+    <%= link_to "Back to Drinks", drinks_path, class: "btn" %>
+    <%= link_to "📸 Add Picture", new_picture_path(drink_id: @drink.id), class: "btn btn-success" %>
+  </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+  <div>
+    <div class="card">
+      <h2 style="margin-top: 0;">Details</h2>
+
+      <div style="margin-bottom: 1rem;">
+        <strong style="display: block; color: #666; font-size: 0.875rem;">Volume</strong>
+        <%= number_with_precision(@drink.volume_ml, precision: 0) %> mL
+        (<%= number_with_precision(@drink.volume_ml / 29.5735, precision: 1) %> oz)
+      </div>
+
+      <div style="margin-bottom: 1rem;">
+        <strong style="display: block; color: #666; font-size: 0.875rem;">Time</strong>
+        <%= @drink.time.strftime("%B %d, %Y at %I:%M %p") %>
+        <br>
+        <small style="color: #999;"><%= time_ago_in_words(@drink.time) %> ago</small>
+      </div>
+
+      <% if @drink.user %>
+        <div style="margin-bottom: 1rem;">
+          <strong style="display: block; color: #666; font-size: 0.875rem;">Drinker</strong>
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem;">
+            <% if @drink.user.mugshot_image.attached? %>
+              <% if @drink.user.mugshot_image.content_type == "image/svg+xml" %>
+                <%= image_tag @drink.user.mugshot_image, 
+                    style: "border-radius: 50%; width: 40px; height: 40px; object-fit: cover;" %>
+              <% else %>
+                <%= image_tag @drink.user.mugshot_image.variant(resize_to_limit: [40, 40]), 
+                    style: "border-radius: 50%; width: 40px; height: 40px; object-fit: cover;" %>
+              <% end %>
+            <% end %>
+            <span><%= @drink.user.display_name || @drink.user.username %></span>
+          </div>
+        </div>
+      <% end %>
+
+      <% if @drink.keg %>
+        <div style="margin-bottom: 1rem;">
+          <strong style="display: block; color: #666; font-size: 0.875rem;">Beverage</strong>
+          <%= link_to @drink.keg.beverage.name, keg_path(@drink.keg) %>
+          <% if @drink.keg.beverage.producer %>
+            by <%= @drink.keg.beverage.producer.name %>
+          <% end %>
+        </div>
+      <% end %>
+
+      <% if @drink.drinking_session %>
+        <div style="margin-bottom: 1rem;">
+          <strong style="display: block; color: #666; font-size: 0.875rem;">Session</strong>
+          <%= link_to "Session ##{@drink.drinking_session.id}", session_path(@drink.drinking_session) %>
+        </div>
+      <% end %>
+
+      <% if @drink.duration %>
+        <div style="margin-bottom: 1rem;">
+          <strong style="display: block; color: #666; font-size: 0.875rem;">Pour Duration</strong>
+          <%= @drink.duration %> seconds
+        </div>
+      <% end %>
+
+      <% if @drink.status != "valid" %>
+        <div style="margin-bottom: 1rem;">
+          <strong style="display: block; color: #666; font-size: 0.875rem;">Status</strong>
+          <span class="badge badge-<%= @drink.status == "cancelled" ? "danger" : "warning" %>">
+            <%= @drink.status.titleize %>
+          </span>
+        </div>
+      <% end %>
+    </div>
+
+    <% if @drink.pictures.any? %>
+      <div class="card" style="margin-top: 1.5rem;">
+        <h2 style="margin-top: 0;">Pictures (<%= @drink.pictures.count %>)</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
+          <% @drink.pictures.each do |picture| %>
+            <%= link_to picture_path(picture) do %>
+              <% if picture.image.attached? %>
+                <% if picture.image.content_type == "image/svg+xml" %>
+                  <%= image_tag picture.image, 
+                      style: "width: 100%; height: 200px; object-fit: cover; border-radius: 8px; border: 2px solid #ddd;" %>
+                <% else %>
+                  <%= image_tag picture.image.variant(resize_to_limit: [400, 400]), 
+                      style: "width: 100%; height: 200px; object-fit: cover; border-radius: 8px; border: 2px solid #ddd;" %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @events.any? %>
+      <div class="card" style="margin-top: 1.5rem;">
+        <h2 style="margin-top: 0;">Events</h2>
+        <div style="border-left: 3px solid #007bff; padding-left: 1rem;">
+          <% @events.each do |event| %>
+            <div style="margin-bottom: 1rem;">
+              <div style="font-weight: 600;"><%= event.kind.titleize %></div>
+              <div style="font-size: 0.875rem; color: #666;">
+                <%= event.time.strftime("%B %d, %Y at %I:%M %p") %>
+              </div>
+              <% if event.user %>
+                <div style="font-size: 0.875rem; color: #666;">
+                  by <%= event.user.display_name || event.user.username %>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <div class="card">
+      <h2 style="margin-top: 0;">Actions</h2>
+
+      <% if @drink.status == "valid" %>
+        <%= button_to "Cancel Drink", cancel_drink_path(@drink), method: :post,
+            data: { confirm: "Are you sure you want to cancel this drink?" },
+            class: "btn btn-danger", style: "width: 100%; margin-bottom: 0.5rem;" %>
+
+        <%= button_to "Mark as Spilled", cancel_drink_path(@drink, spilled: true), method: :post,
+            data: { confirm: "Mark this drink as spilled?" },
+            class: "btn btn-danger", style: "width: 100%; margin-bottom: 0.5rem;" %>
+      <% end %>
+
+      <%= link_to "📸 Add Picture", new_picture_path(drink_id: @drink.id), class: "btn btn-success", style: "width: 100%;" %>
+    </div>
+
+    <% if @drink.keg %>
+      <div class="card" style="margin-top: 1.5rem;">
+        <h2 style="margin-top: 0;">Keg Info</h2>
+        <div style="margin-bottom: 0.5rem;">
+          <strong><%= @drink.keg.beverage.name %></strong>
+        </div>
+        <% if @drink.keg.beverage.producer %>
+          <div style="margin-bottom: 0.5rem; color: #666;">
+            <%= @drink.keg.beverage.producer.name %>
+          </div>
+        <% end %>
+        <div style="margin-top: 1rem;">
+          <%= link_to "View Keg", keg_path(@drink.keg), class: "btn", style: "width: 100%;" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
