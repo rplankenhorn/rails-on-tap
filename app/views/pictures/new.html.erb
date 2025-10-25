@@ -1,0 +1,56 @@
+<% content_for :title, "Upload Picture - Rails on Tap" %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <h1>Upload Picture</h1>
+  <%= link_to "Back", :back, class: "btn" %>
+</div>
+
+<div class="card">
+  <%= form_with(model: @picture, local: true) do |form| %>
+    <% if @picture.errors.any? %>
+      <div style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+        <h3>Please fix the following errors:</h3>
+        <ul>
+          <% @picture.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div style="margin-bottom: 1rem;">
+      <%= form.label :image, "Select Image", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
+      <%= form.file_field :image, accept: "image/*", required: true, 
+          style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" %>
+      <small style="color: #666; font-size: 0.875rem;">Upload a photo (JPG, PNG, etc.)</small>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <%= form.label :caption, style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
+      <%= form.text_field :caption, placeholder: "Add a caption (optional)", 
+          style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" %>
+    </div>
+
+    <% if params[:drink_id] %>
+      <%= form.hidden_field :drink_id, value: params[:drink_id] %>
+      <div style="background: #d4edda; color: #155724; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+        <strong>📸 This picture will be associated with Drink #<%= params[:drink_id] %></strong>
+      </div>
+    <% end %>
+
+    <div>
+      <%= form.submit "Upload Picture", class: "btn btn-success" %>
+      <%= link_to "Cancel", :back, class: "btn" %>
+    </div>
+  <% end %>
+</div>
+
+<div class="card" style="margin-top: 1.5rem; background: #e7f3ff;">
+  <h3 style="margin-top: 0;">📸 Tips for Great Pictures</h3>
+  <ul style="margin: 0; padding-left: 1.5rem;">
+    <li>Capture the perfect pour with good lighting</li>
+    <li>Show off the beer's color and head</li>
+    <li>Include the tap or keg in the shot for context</li>
+    <li>Take pictures during pour events to automatically associate them with drinks</li>
+  </ul>
+</div>

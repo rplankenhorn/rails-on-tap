@@ -8,6 +8,7 @@ class Picture < ApplicationRecord
 
   # Validations
   validates :time, presence: true
+  validate :image_attached, on: :create
 
   # Instance methods
   def get_caption
@@ -15,5 +16,11 @@ class Picture < ApplicationRecord
     return "#{user.username} pouring drink #{drink.id}" if drink && user
     return "An unknown drinker pouring drink #{drink.id}" if drink
     ""
+  end
+
+  private
+
+  def image_attached
+    errors.add(:image, "must be attached") unless image.attached?
   end
 end

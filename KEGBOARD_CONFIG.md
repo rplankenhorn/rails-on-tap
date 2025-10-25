@@ -2,7 +2,7 @@
 
 ## Overview
 
-Ruby On Tap now includes a flexible hardware configuration system that allows you to connect flow meters and sensors via different methods. Currently, MQTT is fully supported (perfect for ESP32 boards), with Serial/USB support coming soon.
+Rails on Tap now includes a flexible hardware configuration system that allows you to connect flow meters and sensors via different methods. Currently, MQTT is fully supported (perfect for ESP32 boards), with Serial/USB support coming soon.
 
 ## Features
 
@@ -61,7 +61,7 @@ mqtt:
   topic_prefix: "kegbot"
 ```
 
-Make sure your Ruby On Tap configuration matches:
+Make sure your Rails on Tap configuration matches:
 - **MQTT Broker**: Same as `mqtt_server` in your ESP32 secrets
 - **Username**: Same as `mqtt_user` (if used)
 - **Password**: Same as `mqtt_password` (if used)
@@ -74,7 +74,7 @@ Make sure your Ruby On Tap configuration matches:
 1. **ESP32 Detects Pour**: When beer flows through a tap, the flow meter sends pulses to the ESP32
 2. **Tick Counter Increments**: The ESP32 increments a persistent counter for that meter
 3. **MQTT Publish**: When the count changes, the ESP32 publishes to `kegbot/meter/{N}` with the total tick count
-4. **Ruby On Tap Receives**: Ruby On Tap subscribes to these topics and processes flow data
+4. **Rails on Tap Receives**: Rails on Tap subscribes to these topics and processes flow data
 5. **Drink Recording**: The system calculates volume and creates drink records
 
 ### Data Flow Example
@@ -84,7 +84,7 @@ Flow Meter → ESP32 GPIO → Counter Increment → MQTT Publish
                                                     ↓
                                         kegbot/meter/0: "12547"
                                                     ↓
-                                        Ruby On Tap MQTT Subscriber
+                                        Rails on Tap MQTT Subscriber
                                                     ↓
                                         Calculate Volume (ticks × mL/tick)
                                                     ↓
@@ -166,12 +166,12 @@ end
 ### Can't Connect to MQTT Broker
 - Verify the broker IP/hostname is correct
 - Check that the port is open (use `telnet <broker> 1883`)
-- Ensure your Ruby On Tap server can reach the broker on the network
+- Ensure your Rails on Tap server can reach the broker on the network
 - Verify credentials if authentication is enabled
 
 ### Not Receiving Flow Data
 - Check ESP32 is connected and publishing (`mosquitto_sub -h <broker> -t kegbot/meter/#`)
-- Verify topic prefix matches between ESP32 and Ruby On Tap
+- Verify topic prefix matches between ESP32 and Rails on Tap
 - Check MQTT broker logs for connection/subscription errors
 
 ### Multiple Configurations

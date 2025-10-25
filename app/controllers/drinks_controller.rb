@@ -2,7 +2,7 @@ class DrinksController < ApplicationController
   before_action :set_drink, only: [ :show, :reassign, :cancel ]
 
   def index
-    @drinks = Drink.includes(:user, { keg: :beverage }, :drinking_session)
+    @drinks = Drink.includes(:user, { keg: :beverage }, :drinking_session, :pictures)
                    .order(time: :desc)
                    .page(params[:page])
   end

@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: {
+    registrations: "users/registrations"
+  }
 
   # Root path
   root "dashboard#index"
@@ -25,9 +27,11 @@ Rails.application.routes.draw do
   resources :drinks, only: [ :index, :show ] do
     member do
       patch :reassign
-      delete :cancel
+      post :cancel
     end
   end
+
+  resources :pictures
 
   resources :sessions, only: [ :index, :show ], controller: :drinking_sessions
 

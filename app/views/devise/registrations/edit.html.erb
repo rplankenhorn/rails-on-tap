@@ -1,4 +1,4 @@
-<% content_for :title, "Edit Profile - Ruby On Tap" %>
+<% content_for :title, "Edit Profile - Rails on Tap" %>
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
   <h1>Edit Profile</h1>
@@ -6,7 +6,7 @@
 </div>
 
 <div class="card">
-  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, multipart: true }) do |f| %>
     <% if resource.errors.any? %>
       <div style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
         <h3>Please fix the following errors:</h3>
@@ -36,6 +36,18 @@
       <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
         <small style="color: #856404; font-size: 0.875rem;">Currently waiting confirmation for: <%= resource.unconfirmed_email %></small>
       <% end %>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <%= f.label :mugshot_image, "Profile Picture", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
+      <% if resource.mugshot_image.attached? %>
+        <div style="margin-bottom: 0.5rem;">
+          <%= image_tag resource.mugshot_image, 
+              style: "max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #ddd; display: block;" %>
+        </div>
+      <% end %>
+      <%= f.file_field :mugshot_image, accept: "image/*", style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" %>
+      <small style="color: #666; font-size: 0.875rem;">Upload a profile picture (JPG, PNG, etc.)</small>
     </div>
 
     <hr style="margin: 2rem 0; border: none; border-top: 1px solid #ddd;">

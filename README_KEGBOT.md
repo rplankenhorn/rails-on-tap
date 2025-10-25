@@ -1,10 +1,10 @@
-# Ruby on Tap (Kegbot Rails Edition)
+# Rails on Tap (Kegbot Rails Edition)
 
 A comprehensive beer kegerator monitoring and management system built with Ruby on Rails, replicating the functionality of the [Kegbot Server](https://github.com/Kegbot/kegbot-server).
 
 ## Overview
 
-Ruby on Tap is a complete kegerator monitoring solution that tracks beer consumption, manages multiple taps, monitors temperature, handles user authentication, and provides detailed analytics and statistics. Perfect for home bars, offices, or anywhere you want to track keg activity.
+Rails on Tap is a complete kegerator monitoring solution that tracks beer consumption, manages multiple taps, monitors temperature, handles user authentication, and provides detailed analytics and statistics. Perfect for home bars, offices, or anywhere you want to track keg activity.
 
 ## Features
 
@@ -70,8 +70,8 @@ Ruby on Tap is a complete kegerator monitoring solution that tracks beer consump
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/ruby-on-tap.git
-cd ruby-on-tap
+git clone https://github.com/yourusername/rails-on-tap.git
+cd rails-on-tap
 ```
 
 2. Install dependencies:
@@ -247,8 +247,8 @@ rails db:seed
 
 ### Docker
 ```bash
-docker build -t ruby-on-tap .
-docker run -p 3000:3000 ruby-on-tap
+docker build -t rails-on-tap .
+docker run -p 3000:3000 rails-on-tap
 ```
 
 ### Kamal (Included)
@@ -298,8 +298,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Support
 
 - Documentation: https://docs.your-kegbot.com
-- Issues: https://github.com/yourusername/ruby-on-tap/issues
-- Discussions: https://github.com/yourusername/ruby-on-tap/discussions
+- Issues: https://github.com/yourusername/rails-on-tap/issues
+- Discussions: https://github.com/yourusername/rails-on-tap/discussions
 
 ## Roadmap
 

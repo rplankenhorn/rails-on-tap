@@ -1,0 +1,90 @@
+<% content_for :title, "#{@user.display_name || @user.username} - Rails on Tap" %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <h1><%= @user.display_name || @user.username %></h1>
+  <%= link_to "Back to Users", users_path, class: "btn" %>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem;">
+  <div>
+    <div class="card" style="text-align: center;">
+      <% if @user.mugshot_image.attached? %>
+        <% if @user.mugshot_image.content_type == "image/svg+xml" %>
+          <%= image_tag @user.mugshot_image, 
+              style: "border-radius: 50%; width: 200px; height: 200px; object-fit: cover; margin: 0 auto;" %>
+        <% else %>
+          <%= image_tag @user.mugshot_image.variant(resize_to_limit: [300, 300]), 
+              style: "border-radius: 50%; width: 200px; height: 200px; object-fit: cover; margin: 0 auto;" %>
+        <% end %>
+      <% else %>
+        <div style="width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin: 0 auto; display: flex; align-items: center; justify-content: center; color: white; font-size: 4rem; font-weight: bold;">
+          <%= @user.username[0].upcase %>
+        </div>
+      <% end %>
+      
+      <h2 style="margin-top: 1rem;"><%= @user.display_name || @user.username %></h2>
+      <p style="color: #666; margin-bottom: 0;">@<%= @user.username %></p>
+      
+      <% if @user.email.present? %>
+        <p style="color: #999; font-size: 0.875rem; margin-top: 0.5rem;"><%= @user.email %></p>
+      <% end %>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top: 0;">Stats</h3>
+      <div style="margin-bottom: 1rem;">
+        <strong style="display: block; color: #666; font-size: 0.875rem;">Total Drinks</strong>
+        <span style="font-size: 1.5rem; color: #3498db;"><%= @drink_count %></span>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <strong style="display: block; color: #666; font-size: 0.875rem;">Total Volume</strong>
+        <span style="font-size: 1.5rem; color: #27ae60;">
+          <%= number_with_precision(@total_volume / 1000.0, precision: 1) %> L
+        </span>
+      </div>
+      <%= link_to "View Full Stats", stats_user_path(@user), class: "btn", style: "width: 100%; margin-top: 1rem;" %>
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <h2 style="margin-top: 0;">Recent Drinks</h2>
+      <% if @recent_drinks.any? %>
+        <% @recent_drinks.each do |drink| %>
+          <div style="border-bottom: 1px solid #ecf0f1; padding: 1rem 0; display: flex; gap: 1rem;">
+            <% if drink.pictures.any? && drink.pictures.first.image.attached? %>
+              <%= link_to picture_path(drink.pictures.first) do %>
+                <% if drink.pictures.first.image.content_type == "image/svg+xml" %>
+                  <%= image_tag drink.pictures.first.image, 
+                      style: "width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #ddd;" %>
+                <% else %>
+                  <%= image_tag drink.pictures.first.image.variant(resize_to_limit: [100, 100]), 
+                      style: "width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #ddd;" %>
+                <% end %>
+              <% end %>
+            <% end %>
+            
+            <div style="flex: 1;">
+              <div style="font-weight: 600; margin-bottom: 0.25rem;">
+                <%= drink.keg.beverage.name %>
+              </div>
+              <div style="color: #666; font-size: 0.875rem; margin-bottom: 0.25rem;">
+                <%= drink.keg.beverage.producer.name %>
+              </div>
+              <div style="color: #999; font-size: 0.875rem;">
+                <%= number_with_precision(drink.volume_ml, precision: 0) %> mL • 
+                <%= time_ago_in_words(drink.time) %> ago
+              </div>
+            </div>
+            
+            <div>
+              <%= link_to "View", drink_path(drink), class: "btn", style: "font-size: 0.875rem; padding: 0.25rem 0.75rem;" %>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <p style="color: #999; text-align: center; padding: 2rem;">No drinks yet</p>
+      <% end %>
+    </div>
+  </div>
+</div>

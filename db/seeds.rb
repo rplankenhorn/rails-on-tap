@@ -4,7 +4,7 @@
 
 # Create default site settings
 site = KegbotSite.find_or_create_by(name: "default") do |s|
-  s.title = "Ruby on Tap"
+  s.title = "Rails on Tap"
   s.is_setup = true
   s.server_version = "1.0.0"
   s.volume_display_units = "imperial"
@@ -200,3 +200,160 @@ puts "  2. Login with username: admin, password: password"
 puts "  3. Use API key: #{api_key.key}"
 puts "  4. Configure your hardware at http://localhost:3000/kegboard_configs"
 puts "\n⚠️  Remember to change the admin password!"
+
+# Create test users with profile pictures and drinks
+puts "\n" + "=" * 50
+puts "Creating test data with pictures..."
+puts "=" * 50
+
+# Create test users
+test_users = [
+  { username: "johndoe", email: "john@example.com", display_name: "John Doe" },
+  { username: "janedoe", email: "jane@example.com", display_name: "Jane Doe" },
+  { username: "bobsmith", email: "bob@example.com", display_name: "Bob Smith" }
+]
+
+users = test_users.map do |user_data|
+  User.find_or_create_by(username: user_data[:username]) do |u|
+    u.email = user_data[:email]
+    u.password = "password123"
+    u.password_confirmation = "password123"
+    u.display_name = user_data[:display_name]
+    u.is_active = true
+    u.is_staff = false
+  end
+end
+
+puts "✓ Test users created (password: password123)"
+
+# Create placeholder images for profile pictures
+require 'net/http'
+require 'uri'
+
+def create_placeholder_image(text, color)
+  # Create a simple placeholder using data URI
+  # In production, you'd want to download real images
+  # For now, we'll create a simple text-based image using SVG
+  svg = <<~SVG
+    <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+      <rect width="200" height="200" fill="#{color}"/>
+      <text x="50%" y="50%" font-family="Arial" font-size="60" fill="white"#{' '}
+            text-anchor="middle" dominant-baseline="middle">#{text}</text>
+    </svg>
+  SVG
+
+  StringIO.new(svg)
+end
+
+# Attach profile pictures to test users
+colors = [ "#3498db", "#e74c3c", "#27ae60" ]
+users.each_with_index do |user, index|
+  unless user.mugshot_image.attached?
+    initial = user.username[0].upcase
+    img = create_placeholder_image(initial, colors[index])
+    user.mugshot_image.attach(
+      io: img,
+      filename: "#{user.username}_avatar.svg",
+      content_type: "image/svg+xml"
+    )
+    puts "  ✓ Profile picture attached for #{user.display_name}"
+  end
+end
+
+# Create test drinks and sessions
+active_kegs = Keg.joins(:keg_tap).where.not(keg_taps: { id: nil })
+
+if active_kegs.any?
+  # Create a drinking session
+  session = DrinkingSession.create!(
+    name: "Friday Night Session",
+    start_time: 2.hours.ago,
+    end_time: Time.current,
+    volume_ml: 0
+  )
+  puts "✓ Created test drinking session"
+
+  # Create drinks for each user
+  drinks_created = []
+  users.each_with_index do |user, index|
+    keg = active_kegs.sample
+
+    # Create 2-3 drinks per user
+    rand(2..3).times do |drink_num|
+      drink = Drink.create!(
+        user: user,
+        keg: keg,
+        drinking_session: session,
+        time: (120 - (index * 30) - (drink_num * 10)).minutes.ago,
+        volume_ml: rand(300..500),
+        ticks: rand(660..1100), # Based on ~2.2 ticks/ml
+        duration: rand(10..30)
+      )
+      drinks_created << drink
+
+      # Update session volume
+      session.update(volume_ml: session.volume_ml + drink.volume_ml)
+
+      puts "  ✓ Created drink for #{user.display_name}"
+    end
+  end
+
+  # Create pictures for some drinks
+  drinks_with_pictures = drinks_created.sample(5)
+
+  drinks_with_pictures.each_with_index do |drink, index|
+    # Create placeholder beer image
+    beer_colors = [ "#F5A623", "#D4A024", "#CC8800", "#CC7700", "#D9A021" ]
+    svg = <<~SVG
+      <svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="400" fill="#2c3e50"/>
+        <ellipse cx="200" cy="200" rx="80" ry="120" fill="#{beer_colors[index]}"/>
+        <ellipse cx="200" cy="150" rx="80" ry="30" fill="#FFFFFF" opacity="0.9"/>
+        <text x="200" y="350" font-family="Arial" font-size="20" fill="white"#{' '}
+              text-anchor="middle">🍺 #{drink.keg.beverage.name}</text>
+      </svg>
+    SVG
+
+    img = StringIO.new(svg)
+
+    picture = Picture.new(
+      user: drink.user,
+      drink: drink,
+      keg: drink.keg,
+      drinking_session: drink.drinking_session,
+      time: drink.time + rand(1..5).seconds,
+      caption: [
+        "Great pour!",
+        "Cheers! 🍻",
+        "Perfect head on this one",
+        "Love this beer!",
+        "Best #{drink.keg.beverage.name} yet!"
+      ].sample
+    )
+
+    picture.image.attach(
+      io: img,
+      filename: "pour_#{drink.id}.svg",
+      content_type: "image/svg+xml"
+    )
+
+    picture.save!
+
+    puts "  ✓ Picture attached to drink ##{drink.id}"
+  end
+
+  puts "\n✓ Created #{drinks_created.count} drinks with #{drinks_with_pictures.count} pictures"
+end
+
+puts "\n" + "=" * 50
+puts "Test data with pictures created!"
+puts "=" * 50
+puts "\nTest users (all password: password123):"
+users.each do |user|
+  puts "  - #{user.username} (#{user.display_name})"
+end
+puts "\nVisit these pages to see the pictures:"
+puts "  📸 Pictures Gallery: http://localhost:3000/pictures"
+puts "  👤 User Profile: http://localhost:3000/users/#{users.first.id}"
+puts "  🍺 Drinks: http://localhost:3000/drinks"
+puts "  🎉 Sessions: http://localhost:3000/sessions"

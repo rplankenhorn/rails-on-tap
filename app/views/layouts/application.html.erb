@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Ruby On Tap" %></title>
+    <title><%= content_for(:title) || "Rails on Tap" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -59,13 +59,14 @@
 
   <body>
     <header>
-      <h1><%= link_to "🍺 Ruby On Tap", root_path %></h1>
+      <h1><%= link_to "🍺 Rails on Tap", root_path %></h1>
       <nav>
         <%= link_to "Dashboard", root_path %>
         <%= link_to "Kegs", kegs_path %>
         <%= link_to "Taps", taps_path %>
         <%= link_to "Drinks", drinks_path %>
         <%= link_to "Sessions", sessions_path %>
+        <%= link_to "📸 Pictures", pictures_path %>
         <%= link_to "⚙️ Hardware", kegboard_configs_path %>
       </nav>
       <div class="user-menu">
