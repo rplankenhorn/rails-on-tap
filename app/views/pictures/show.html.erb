@@ -13,7 +13,7 @@
 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
   <div class="card" style="padding: 0; overflow: hidden;">
     <% if @picture.image.attached? %>
-      <%= image_tag @picture.image, style: "width: 100%; height: auto;" %>
+      <%= image_tag rails_storage_proxy_path(@picture.image), style: "width: 100%; height: auto;" %>
     <% else %>
       <div style="width: 100%; height: 400px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;">
         No Image Available

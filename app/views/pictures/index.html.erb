@@ -11,13 +11,8 @@
       <div class="card" style="padding: 0; overflow: hidden;">
         <%= link_to picture_path(picture) do %>
           <% if picture.image.attached? %>
-            <% if picture.image.content_type == "image/svg+xml" %>
-              <%= image_tag picture.image, 
-                  style: "width: 100%; height: 300px; object-fit: cover;" %>
-            <% else %>
-              <%= image_tag picture.image.variant(resize_to_limit: [600, 600]), 
-                  style: "width: 100%; height: 300px; object-fit: cover;" %>
-            <% end %>
+            <%= image_tag rails_storage_proxy_path(picture.image), 
+                style: "width: 100%; height: 300px; object-fit: cover;" %>
           <% else %>
             <div style="width: 100%; height: 300px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;">
               No Image
