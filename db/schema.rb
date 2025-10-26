@@ -358,7 +358,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_19_181201) do
   add_foreign_key "flow_meters", "keg_taps"
   add_foreign_key "flow_toggles", "hardware_controllers", column: "controller_id"
   add_foreign_key "flow_toggles", "keg_taps"
-  add_foreign_key "invitations", "invited_bies"
+  add_foreign_key "invitations", "users", column: "invited_by_id"
   add_foreign_key "keg_taps", "flow_meters", column: "meter_id"
   add_foreign_key "keg_taps", "kegs", column: "current_keg_id"
   add_foreign_key "keg_taps", "thermo_sensors", column: "temperature_sensor_id"
