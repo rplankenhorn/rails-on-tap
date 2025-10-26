@@ -7,10 +7,11 @@
 # Ignore bundler config.
 /.bundle
 
-# Ignore all environment files.
-/.env*
+# Ignore all environment files (but allow .env.example)
+/.env
 /.env.local
 /.env.*.local
+!/.env.example
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -43,6 +44,7 @@ android/local.properties
 android/.idea/
 android/*.iml
 android/build/
+android/app/build/
 android/.DS_Store
 android/*.apk
 android/*.ap_
