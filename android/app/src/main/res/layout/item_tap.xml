@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="6dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardBackgroundColor="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tap_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tap 1"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#1A237E"
+                android:letterSpacing="0.02" />
+
+            <TextView
+                android:id="@+id/status_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ACTIVE"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:background="@drawable/badge_background"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:letterSpacing="0.1"
+                android:layout_marginTop="6dp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="30dp"
+            android:layout_height="3dp"
+            android:background="#FF6F00"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:id="@+id/beverage_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="IPA"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#212121"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/producer_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Stone Brewing"
+            android:textSize="13sp"
+            android:textColor="#757575"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="12dp"
+            android:padding="10dp"
+            android:background="@drawable/progress_container">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Keg Level"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="#757575"
+                android:letterSpacing="0.1"
+                android:layout_marginBottom="6dp"
+                android:layout_gravity="center_horizontal" />
+
+            <ProgressBar
+                android:id="@+id/keg_progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:max="100"
+                android:progress="90"
+                android:progressDrawable="@drawable/custom_progress" />
+
+            <TextView
+                android:id="@+id/percent_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="90%"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#1A237E"
+                android:layout_marginTop="6dp"
+                android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
