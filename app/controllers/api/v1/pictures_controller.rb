@@ -34,7 +34,7 @@ class Api::V1::PicturesController < ApplicationController
       drinking_session_id: picture.drinking_session_id,
       caption: picture.caption,
       time: picture.time.iso8601,
-      image_url: rails_storage_proxy_url(picture.image) if picture.image.attached?,
+      image_url: picture.image.attached? ? rails_storage_proxy_url(picture.image) : nil,
       user: picture.user ? { id: picture.user.id, username: picture.user.username } : nil
     }
   end
