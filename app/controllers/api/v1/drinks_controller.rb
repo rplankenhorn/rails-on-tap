@@ -6,12 +6,12 @@ class Api::V1::DrinksController < ApplicationController
     @drinks = Drink.includes(:user, keg: :beverage)
                    .order(time: :desc)
                    .limit(params[:limit] || 50)
-    render json: @drinks, include: [ :user, keg: :beverage ]
+    render json: @drinks.map { |drink| drink_json(drink) }
   end
 
   def show
     @drink = Drink.find(params[:id])
-    render json: @drink, include: [ :user, { keg: :beverage }, :drinking_session ]
+    render json: drink_json(@drink)
   end
 
   def create
@@ -50,6 +50,52 @@ class Api::V1::DrinksController < ApplicationController
   end
 
   private
+
+  def drink_json(drink)
+    {
+      id: drink.id,
+      ticks: drink.ticks,
+      volume_ml: drink.volume_ml,
+      time: drink.time.iso8601,
+      duration: drink.duration,
+      shout: drink.shout,
+      user: {
+        id: drink.user.id,
+        username: drink.user.username,
+        display_name: drink.user.display_name,
+        email: drink.user.email
+      },
+      keg: {
+        id: drink.keg.id,
+        name: drink.keg.beverage&.name,
+        beverage_id: drink.keg.beverage_id,
+        status: drink.keg.status,
+        started_at: drink.keg.start_time&.iso8601,
+        ended_at: drink.keg.end_time&.iso8601,
+        initial_volume: drink.keg.full_volume_ml,
+        final_volume: drink.keg.served_volume_ml,
+        beverage: drink.keg.beverage ? {
+          id: drink.keg.beverage.id,
+          name: drink.keg.beverage.name,
+          style: drink.keg.beverage.style,
+          beverage_type: drink.keg.beverage.beverage_type,
+          abv_percent: drink.keg.beverage.abv_percent,
+          beverage_producer: drink.keg.beverage.beverage_producer ? {
+            id: drink.keg.beverage.beverage_producer.id,
+            name: drink.keg.beverage.beverage_producer.name,
+            country: drink.keg.beverage.beverage_producer.country,
+            origin_state: drink.keg.beverage.beverage_producer.origin_state,
+            origin_city: drink.keg.beverage.beverage_producer.origin_city
+          } : nil
+        } : nil
+      },
+      drinking_session: drink.drinking_session ? {
+        id: drink.drinking_session.id,
+        start_time: drink.drinking_session.start_time&.iso8601,
+        end_time: drink.drinking_session.end_time&.iso8601
+      } : nil
+    }
+  end
 
   def authenticate_api_key
     api_key = request.headers["X-API-Key"] || params[:api_key]
