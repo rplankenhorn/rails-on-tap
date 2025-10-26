@@ -1,0 +1,10 @@
+# This file contains local configuration for your Android app.
+# Copy this file to local.properties and fill in your values.
+# DO NOT commit local.properties to version control!
+
+# SDK location (automatically added by Android Studio)
+# sdk.dir=/path/to/android/sdk
+
+# Rails on Tap API Configuration
+rails.api.key=your_api_key_here
+rails.api.base.url=http://10.0.2.2:3000/
