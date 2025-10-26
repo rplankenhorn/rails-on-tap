@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.railsontap"
-        minSdk 24
+        minSdk 26
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -42,8 +42,8 @@ android {
 }
 
 dependencies {
-    // Hotwire Native
-    implementation 'dev.hotwire:hotwire-android:1.0.0'
+    // Hotwire Native (Turbo Android)
+    implementation 'dev.hotwire:turbo:7.1.5'
     
     // Android dependencies
     implementation 'androidx.appcompat:appcompat:1.6.1'
