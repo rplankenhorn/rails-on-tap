@@ -96,6 +96,16 @@ Rails.application.routes.draw do
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check
 
+  # API for mobile apps
+  namespace :api do
+    namespace :v1 do
+      resources :drinks, only: [ :create, :show, :index ]
+      resources :pictures, only: [ :create ]
+      resources :taps, only: [ :index, :show ]
+      resources :kegs, only: [ :index, :show ]
+    end
+  end
+
   # PWA files
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker

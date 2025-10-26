@@ -9,6 +9,8 @@
 
 # Ignore all environment files.
 /.env*
+/.env.local
+/.env.*.local
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -32,3 +34,85 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# ============================================
+# Android / Gradle
+# ============================================
+android/.gradle/
+android/local.properties
+android/.idea/
+android/*.iml
+android/build/
+android/.DS_Store
+android/*.apk
+android/*.ap_
+android/*.dex
+android/*.class
+android/bin/
+android/gen/
+android/out/
+android/.classpath
+android/.project
+android/.settings/
+android/*.keystore
+android/captures/
+android/.externalNativeBuild/
+android/.cxx/
+
+# ============================================
+# Android Studio
+# ============================================
+android/.idea/workspace.xml
+android/.idea/tasks.xml
+android/.idea/gradle.xml
+android/.idea/assetWizardSettings.xml
+android/.idea/dictionaries
+android/.idea/vcs.xml
+android/.idea/jsLibraryMappings.xml
+android/.idea/modules.xml
+android/.idea/misc.xml
+android/.idea/uiDesigner.xml
+android/.idea/compiler.xml
+android/.idea/inspectionProfiles/
+
+# ============================================
+# macOS
+# ============================================
+.DS_Store
+.AppleDouble
+.LSOverride
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# ============================================
+# Node / Yarn (Rails JavaScript bundling)
+# ============================================
+node_modules/
+yarn-error.log
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# ============================================
+# IDE
+# ============================================
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# ============================================
+# System
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
