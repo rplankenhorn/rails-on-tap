@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # Rails Backend API
+  rails:
+    build: .
+    container_name: rails-on-tap-backend
+    ports:
+      - "3000:3000"
+    environment:
+      RAILS_ENV: development
+      RAILS_SERVE_STATIC_FILES: 'true'
+      DATABASE_URL: sqlite3:db/development.sqlite3
+      ACTIVE_STORAGE_SERVICE: local
+    volumes:
+      - .:/app
+      - /app/tmp
+      - /app/log
+      - bundle:/usr/local/bundle
+    command: bin/rails s -b 0.0.0.0
+    depends_on:
+      - redis
+    networks:
+      - rails-on-tap
+
+  # Redis for caching and background jobs
+  redis:
+    image: redis:7-alpine
+    container_name: rails-on-tap-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - rails-on-tap
+
+  # Optional: PostgreSQL (if you want to switch from SQLite)
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: rails-on-tap-postgres
+  #   environment:
+  #     POSTGRES_DB: rails_on_tap_development
+  #     POSTGRES_HOST_AUTHENTICATION_METHOD: trust
+  #   volumes:
+  #     - postgres:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - rails-on-tap
+
+  # Optional: Mail catcher for development email testing
+  mailcatcher:
+    image: sj26/mailcatcher:latest
+    container_name: rails-on-tap-mailcatcher
+    ports:
+      - "1025:1025"
+      - "1080:1080"
+    networks:
+      - rails-on-tap
+
+volumes:
+  bundle:
+  postgres:
+
+networks:
+  rails-on-tap:
+    driver: bridge

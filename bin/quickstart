@@ -1,0 +1,237 @@
+#!/bin/bash
+
+# Rails on Tap - Quick Start Script
+# This script guides you through the first-time setup
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Functions
+print_header() {
+    echo -e "${BLUE}==================================${NC}"
+    echo -e "${BLUE}$1${NC}"
+    echo -e "${BLUE}==================================${NC}"
+}
+
+print_success() {
+    echo -e "${GREEN}✓ $1${NC}"
+}
+
+print_info() {
+    echo -e "${BLUE}ℹ $1${NC}"
+}
+
+print_warning() {
+    echo -e "${YELLOW}⚠ $1${NC}"
+}
+
+print_error() {
+    echo -e "${RED}✗ $1${NC}"
+}
+
+# Start
+clear
+print_header "Rails on Tap - Quick Start Setup"
+
+echo ""
+echo "This script will help you set up the Rails on Tap development environment."
+echo "You can run individual commands or follow the interactive setup."
+echo ""
+
+# Check prerequisites
+print_header "Checking Prerequisites"
+
+# Ruby
+if command -v ruby &> /dev/null; then
+    RUBY_VERSION=$(ruby -v)
+    print_success "Ruby installed: $RUBY_VERSION"
+else
+    print_error "Ruby not found. Please install Ruby 3.4.7+"
+    exit 1
+fi
+
+# Rails
+if command -v rails &> /dev/null; then
+    RAILS_VERSION=$(rails -v)
+    print_success "Rails installed: $RAILS_VERSION"
+else
+    print_warning "Rails not found. It will be installed via Bundler."
+fi
+
+# Node
+if command -v node &> /dev/null; then
+    NODE_VERSION=$(node -v)
+    print_success "Node installed: $NODE_VERSION"
+else
+    print_error "Node not found. Please install Node.js 18+"
+    exit 1
+fi
+
+# SQLite
+if command -v sqlite3 &> /dev/null; then
+    SQLITE_VERSION=$(sqlite3 -version | cut -d' ' -f1)
+    print_success "SQLite3 installed: $SQLITE_VERSION"
+else
+    print_warning "SQLite3 not found. Attempting to install..."
+fi
+
+echo ""
+print_header "What Would You Like to Do?"
+
+PS3='Select an option: '
+options=(
+    "Full Setup (Backend + Android)"
+    "Backend Only (Rails)"
+    "Android Only"
+    "View Development Guide"
+    "Run Rails Server"
+    "Run Android App"
+    "Exit"
+)
+
+select opt in "${options[@]}"
+do
+    case $opt in
+        "Full Setup (Backend + Android)")
+            print_header "Setting Up Full Development Environment"
+            
+            print_info "Installing Ruby dependencies..."
+            bundle install --quiet
+            print_success "Ruby dependencies installed"
+            
+            print_info "Setting up Rails database..."
+            bin/rails db:create db:migrate 2>/dev/null || print_warning "Database already exists"
+            print_success "Database configured"
+            
+            print_info "Checking Android tools..."
+            if command -v android &> /dev/null || [ -d "$ANDROID_HOME" ]; then
+                print_success "Android tools found"
+                print_info "Android app is in the ./android directory"
+                echo ""
+                echo "To get started with Android development:"
+                echo "  1. Open Android Studio"
+                echo "  2. Select 'Open an existing Android Studio project'"
+                echo "  3. Navigate to: $PWD/android"
+                echo "  4. Wait for Gradle sync to complete"
+            else
+                print_warning "Android Studio not found"
+                echo "Install Android Studio from: https://developer.android.com/studio"
+            fi
+            
+            print_success "Full setup complete!"
+            echo ""
+            echo "Next steps:"
+            echo "  1. Start Rails: make rails"
+            echo "  2. In new terminal, start Android emulator: emulator -avd Pixel_6_API_31"
+            echo "  3. In another terminal: cd android && ./gradlew run"
+            break
+            ;;
+            
+        "Backend Only (Rails)")
+            print_header "Setting Up Rails Backend"
+            
+            print_info "Installing Ruby dependencies..."
+            bundle install --quiet
+            print_success "Ruby dependencies installed"
+            
+            print_info "Setting up database..."
+            bin/rails db:create db:migrate
+            print_success "Database configured"
+            
+            print_success "Backend setup complete!"
+            echo ""
+            echo "Start the Rails server with:"
+            echo "  make rails"
+            echo ""
+            echo "Or run directly:"
+            echo "  bin/rails server"
+            echo ""
+            echo "Access at: http://localhost:3000"
+            break
+            ;;
+            
+        "Android Only")
+            print_header "Setting Up Android Development"
+            
+            if command -v gradle &> /dev/null; then
+                print_success "Gradle found"
+                cd android
+                print_info "Building Android app..."
+                ./gradlew build
+                print_success "Android app built!"
+                cd ..
+            else
+                print_error "Gradle not found. Please install Android Studio."
+                echo "Download from: https://developer.android.com/studio"
+            fi
+            
+            echo ""
+            echo "To run the Android app:"
+            echo "  1. Start Android emulator: emulator -avd Pixel_6_API_31"
+            echo "  2. Run: cd android && ./gradlew run"
+            break
+            ;;
+            
+        "View Development Guide")
+            print_header "Opening Development Guide"
+            if command -v less &> /dev/null; then
+                less DEVELOPMENT.md
+            else
+                cat DEVELOPMENT.md
+            fi
+            break
+            ;;
+            
+        "Run Rails Server")
+            print_header "Starting Rails Server"
+            echo ""
+            echo "Rails server will run on http://localhost:3000"
+            echo "Press Ctrl+C to stop"
+            echo ""
+            bin/rails server
+            break
+            ;;
+            
+        "Run Android App")
+            print_header "Starting Android App"
+            
+            # Check if emulator is running
+            if ! adb devices | grep -q "emulator"; then
+                print_info "Starting Android emulator..."
+                if [ -n "$ANDROID_HOME" ]; then
+                    $ANDROID_HOME/emulator/emulator -avd Pixel_6_API_31 &
+                    sleep 15
+                else
+                    print_error "Android emulator not found"
+                    echo "You can start it manually with:"
+                    echo "  emulator -avd Pixel_6_API_31"
+                    exit 1
+                fi
+            else
+                print_success "Android emulator already running"
+            fi
+            
+            print_info "Building and running Android app..."
+            cd android
+            ./gradlew run
+            cd ..
+            break
+            ;;
+            
+        "Exit")
+            print_info "Goodbye!"
+            break
+            ;;
+            
+        *) print_error "Invalid option. Please try again.";;
+    esac
+done
+
+echo ""
+print_success "Done!"
