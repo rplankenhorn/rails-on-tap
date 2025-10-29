@@ -1,0 +1,91 @@
+<% content_for :title, "#{@kegboard_config.name} - Rails on Tap" %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <h1><%= @kegboard_config.name %></h1>
+  <div>
+    <%= link_to "Edit", edit_kegboard_config_path(@kegboard_config), class: "btn btn-primary" %>
+    <%= link_to "Back", kegboard_configs_path, class: "btn" %>
+  </div>
+</div>
+
+<div class="card">
+  <h2 style="margin-bottom: 1rem;">Configuration Details</h2>
+  
+  <div style="margin-bottom: 1rem;">
+    <strong>Name:</strong>
+    <p><%= @kegboard_config.name %></p>
+  </div>
+
+  <div style="margin-bottom: 1rem;">
+    <strong>Type:</strong>
+    <p><%= @kegboard_config.config_type.upcase %></p>
+  </div>
+
+  <div style="margin-bottom: 1rem;">
+    <strong>Status:</strong>
+    <p>
+      <% if @kegboard_config.enabled %>
+        <span style="color: green;">✓ Enabled</span>
+      <% else %>
+        <span style="color: red;">✗ Disabled</span>
+      <% end %>
+    </p>
+  </div>
+
+  <% if @kegboard_config.config_type == "mqtt" %>
+    <hr style="margin: 2rem 0; border: 1px solid #ddd;">
+    
+    <h3 style="margin-bottom: 1rem;">🌐 MQTT Settings</h3>
+
+    <div style="margin-bottom: 1rem;">
+      <strong>Broker:</strong>
+      <p><%= @kegboard_config.mqtt_broker %></p>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <strong>Port:</strong>
+      <p><%= @kegboard_config.mqtt_port %></p>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <strong>Topic Prefix:</strong>
+      <p><code><%= @kegboard_config.mqtt_topic_prefix %></code></p>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <strong>Username:</strong>
+      <p><%= @kegboard_config.mqtt_username.present? ? @kegboard_config.mqtt_username : "(none)" %></p>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <strong>Password:</strong>
+      <p><%= @kegboard_config.mqtt_password.present? ? "••••••••" : "(none)" %></p>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <strong>MQTT URL:</strong>
+      <p><code><%= @kegboard_config.mqtt_url %></code></p>
+    </div>
+  <% end %>
+
+  <hr style="margin: 2rem 0; border: 1px solid #ddd;">
+
+  <div style="margin-bottom: 1rem;">
+    <strong>Created:</strong>
+    <p><%= @kegboard_config.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+  </div>
+
+  <div style="margin-bottom: 1rem;">
+    <strong>Last Updated:</strong>
+    <p><%= @kegboard_config.updated_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+  </div>
+</div>
+
+<div class="card" style="margin-top: 2rem;">
+  <h3>Actions</h3>
+  <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+    <%= link_to "Edit Configuration", edit_kegboard_config_path(@kegboard_config), class: "btn btn-primary" %>
+    <%= button_to "Test Connection", test_connection_kegboard_config_path(@kegboard_config), method: :post, class: "btn btn-info" %>
+    <%= button_to "Delete Configuration", kegboard_config_path(@kegboard_config), method: :delete, data: { confirm: "Are you sure you want to delete this configuration?" }, class: "btn btn-danger" %>
+  </div>
+</div>

@@ -1,79 +1,11 @@
-<% content_for :title, "#{@kegboard_config.new_record? ? 'New' : 'Edit'} Kegboard Configuration - Rails on Tap" %>
+<% content_for :title, "New Kegboard Configuration - Rails on Tap" %>
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-  <h1><%= @kegboard_config.new_record? ? "New" : "Edit" %> Kegboard Configuration</h1>
+  <h1>New Kegboard Configuration</h1>
   <%= link_to "Back", kegboard_configs_path, class: "btn" %>
 </div>
 
-<div class="card">
-  <%= form_with(model: @kegboard_config, local: true) do |form| %>
-    <% if @kegboard_config.errors.any? %>
-      <div style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
-        <h3>Please fix the following errors:</h3>
-        <ul>
-          <% @kegboard_config.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
-
-    <div style="margin-bottom: 1rem;">
-      <%= form.label :name, "Configuration Name", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
-      <%= form.text_field :name, placeholder: "e.g., Main Kegboard, ESP32 Flow Sensors", style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" %>
-      <small style="color: #666;">A friendly name to identify this configuration</small>
-    </div>
-
-    <div style="margin-bottom: 1rem;">
-      <%= form.label :config_type, "Connection Type", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
-      <%= form.select :config_type, [['MQTT', 'mqtt'], ['Serial/USB (coming soon)', 'serial', { disabled: true }]], {}, { style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" } %>
-    </div>
-
-    <div style="margin-bottom: 1rem;">
-      <%= form.check_box :enabled, style: "margin-right: 0.5rem;" %>
-      <%= form.label :enabled, "Enable this configuration", style: "font-weight: 600;" %>
-    </div>
-
-    <hr style="margin: 2rem 0; border: 1px solid #ddd;">
-
-    <h3 style="margin-bottom: 1rem;">🌐 MQTT Settings</h3>
-
-    <div style="margin-bottom: 1rem;">
-      <%= form.label :mqtt_broker, "MQTT Broker Address", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
-      <%= form.text_field :mqtt_broker, placeholder: "e.g., 192.168.1.100 or mqtt.example.com", style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" %>
-      <small style="color: #666;">IP address or hostname of your MQTT broker</small>
-    </div>
-
-    <div style="margin-bottom: 1rem;">
-      <%= form.label :mqtt_port, "MQTT Port", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
-      <%= form.number_field :mqtt_port, placeholder: "1883", style: "width: 200px; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" %>
-      <small style="color: #666;">Default is 1883</small>
-    </div>
-
-    <div style="margin-bottom: 1rem;">
-      <%= form.label :mqtt_topic_prefix, "Topic Prefix", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
-      <%= form.text_field :mqtt_topic_prefix, placeholder: "kegbot", style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" %>
-      <small style="color: #666;">
-        Flow meters will be subscribed to: <code>[prefix]/meter/0</code>, <code>[prefix]/meter/1</code>, etc.
-      </small>
-    </div>
-
-    <div style="margin-bottom: 1rem;">
-      <%= form.label :mqtt_username, "MQTT Username (optional)", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
-      <%= form.text_field :mqtt_username, placeholder: "Leave blank if no authentication", style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" %>
-    </div>
-
-    <div style="margin-bottom: 1rem;">
-      <%= form.label :mqtt_password, "MQTT Password (optional)", style: "display: block; margin-bottom: 0.5rem; font-weight: 600;" %>
-      <%= form.password_field :mqtt_password, placeholder: "Leave blank if no authentication", style: "width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;" %>
-    </div>
-
-    <div style="margin-top: 2rem;">
-      <%= form.submit @kegboard_config.new_record? ? "Create Configuration" : "Update Configuration", class: "btn btn-success" %>
-      <%= link_to "Cancel", kegboard_configs_path, class: "btn" %>
-    </div>
-  <% end %>
-</div>
+<%= render "form" %>
 
 <div class="card" style="margin-top: 2rem; background: #e3f2fd;">
   <h3>💡 ESP32 Configuration Tips</h3>

@@ -1,1 +1,8 @@
-<%= render "new" %>
+<% content_for :title, "Edit Kegboard Configuration - Rails on Tap" %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <h1>Edit Kegboard Configuration</h1>
+  <%= link_to "Back", kegboard_configs_path, class: "btn" %>
+</div>
+
+<%= render "form" %>
