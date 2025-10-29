@@ -46,6 +46,7 @@ Rails.application.routes.draw do
   resources :kegboard_configs do
     member do
       post :test_connection
+      post :initialize_hardware
     end
   end
 

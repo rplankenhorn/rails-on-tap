@@ -55,6 +55,7 @@
         <div style="display: flex; gap: 0.5rem;">
           <%= link_to "Edit", edit_kegboard_config_path(config), class: "btn" %>
           <%= button_to "Test Connection", test_connection_kegboard_config_path(config), method: :post, class: "btn btn-primary" %>
+          <%= button_to "Initialize Hardware", initialize_hardware_kegboard_config_path(config), method: :post, class: "btn btn-success", data: { confirm: "This will create hardware controller and flow meter records. Continue?" } %>
           <%= link_to "Delete", kegboard_config_path(config), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
         </div>
       </div>
@@ -79,6 +80,14 @@
     <li><strong>MQTT:</strong> Connect to an ESP32 or similar device publishing flow meter data via MQTT (recommended)</li>
     <li><strong>Serial/USB:</strong> Direct connection to Arduino or Kegboard devices (coming soon)</li>
   </ul>
+  
+  <h4 style="margin-top: 1.5rem;">Setup Steps</h4>
+  <ol>
+    <li><strong>Add Configuration:</strong> Create a new kegboard configuration with your MQTT broker details</li>
+    <li><strong>Test Connection:</strong> Verify Rails on Tap can connect to your MQTT broker</li>
+    <li><strong>Initialize Hardware:</strong> Click "Initialize Hardware" to create hardware controller and flow meter records</li>
+    <li><strong>Assign to Taps:</strong> Go to Taps → New/Edit and assign flow meters to your taps</li>
+  </ol>
   
   <h4 style="margin-top: 1.5rem;">ESP32 MQTT Setup</h4>
   <p>Your ESP32 configuration publishes to topics like:</p>
