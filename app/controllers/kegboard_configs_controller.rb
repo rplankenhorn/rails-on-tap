@@ -22,6 +22,8 @@ class KegboardConfigsController < ApplicationController
     if @kegboard_config.save
       redirect_to kegboard_configs_path, notice: "Kegboard configuration was successfully created."
     else
+      # Log validation errors for debugging
+      Rails.logger.error "KegboardConfig validation failed: #{@kegboard_config.errors.full_messages.join(', ')}"
       render :new, status: :unprocessable_entity
     end
   end
