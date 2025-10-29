@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  # Rails Backend API (Production)
+  rails:
+    image: 192.168.86.10:6500/rails-on-tap:latest
+    container_name: rails-on-tap-backend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    environment:
+      RAILS_ENV: production
+      RAILS_SERVE_STATIC_FILES: 'true'
+      RAILS_LOG_TO_STDOUT: 'true'
+      # IMPORTANT: Set this to your actual master key from config/master.key
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      # Optional: Set a specific secret key base (or use master key)
+      # SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      DATABASE_URL: sqlite3:storage/production.sqlite3
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      # Persist SQLite database
+      - rails-storage:/rails/storage
+      # Persist logs
+      - rails-logs:/rails/log
+      # Persist uploaded files/pictures
+      - rails-public:/rails/public
+    depends_on:
+      - redis
+    networks:
+      - rails-on-tap
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/up"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Redis for caching and background jobs
+  redis:
+    image: redis:7-alpine
+    container_name: rails-on-tap-redis
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    networks:
+      - rails-on-tap
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  # Optional: Solid Queue worker for background jobs
+  # Uncomment if you're using Solid Queue
+  # worker:
+  #   image: 192.168.86.10:6500/rails-on-tap:latest
+  #   container_name: rails-on-tap-worker
+  #   restart: unless-stopped
+  #   environment:
+  #     RAILS_ENV: production
+  #     RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+  #     DATABASE_URL: sqlite3:storage/production.sqlite3
+  #     REDIS_URL: redis://redis:6379/0
+  #   volumes:
+  #     - rails-storage:/rails/storage
+  #     - rails-logs:/rails/log
+  #   depends_on:
+  #     - redis
+  #   networks:
+  #     - rails-on-tap
+  #   command: ["bundle", "exec", "rake", "solid_queue:start"]
+
+volumes:
+  rails-storage:
+    driver: local
+  rails-logs:
+    driver: local
+  rails-public:
+    driver: local
+  redis-data:
+    driver: local
+
+networks:
+  rails-on-tap:
+    driver: bridge
