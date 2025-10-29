@@ -2,6 +2,12 @@
 # development, test). The code here should be idempotent so that it can be executed at any point in every environment.
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
 
+# Skip seed data if SKIP_SEED_DATA environment variable is set
+if ENV["SKIP_SEED_DATA"] == "true"
+  puts "⏭️  Skipping seed data (SKIP_SEED_DATA=true)"
+  exit 0
+end
+
 # Create default site settings
 site = KegbotSite.find_or_create_by(name: "default") do |s|
   s.title = "Rails on Tap"
